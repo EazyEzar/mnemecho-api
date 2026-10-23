@@ -1,0 +1,74 @@
+title: mnemEcho · Een Nederlands oor voor je app
+description: De mnemEcho Uitspraak-API beoordeelt gesproken Nederlands tegen de tekst: een score van 0 tot 100, een oordeel, en elk woord en elke klank gemarkeerd. Standaard privé.
+---
+<section class="hero">
+  <p class="tagline" lang="en">Echo it until it's yours.</p>
+  <h1>Een Nederlands oor voor je app.</h1>
+  <p class="lead">Stuur een Nederlandse zin en een opname van iemand die hem uitspreekt. Je
+    krijgt een score van 0 tot 100 terug, een oordeel, en elk woord en elke klank
+    gemarkeerd, met een korte tip bij elke klank die beter kan.</p>
+  <div class="cta">
+    <a class="button primary" href="/nl/docs/">Lees de API-docs</a>
+    <a class="button secondary" href="mailto:{{contact}}?subject=mnemEcho%20API-sleutel">Vraag een early-access-sleutel aan</a>
+  </div>
+</section>
+
+<h2>Wat je terugkrijgt</h2>
+<div class="grid two">
+  <div class="card">
+    <h3>Een score en een oordeel</h3>
+    <p>Eén getal, afgezet tegen moedertaalsprekers, en een oordeel waar je code op kan
+      handelen: <code>excellent</code>, <code>pass</code>, <code>marginal_fail</code> of <code>hard_fail</code>.</p>
+  </div>
+  <div class="card">
+    <h3>Elke klank</h3>
+    <p>Elk woord, elke verwachte klank erin, of die goed was, wat er in plaats daarvan
+      klonk, en een korte tip in het Engels, zoals <span lang="en">"the long ee in zee"</span>.</p>
+  </div>
+  <div class="card">
+    <h3>Het verkeerde woord gevonden</h3>
+    <p>Wie de juiste zin zegt met één woord verwisseld (maart in plaats van februari),
+      hoort welk woord, en krijgt geen voldoende.</p>
+  </div>
+  <div class="card">
+    <h3>Eerlijk voor elke stem</h3>
+    <p>Een lage, hoge, mannelijke, vrouwelijke of accentrijke stem wordt nooit lager
+      beoordeeld om hoe die klinkt, alleen om welke klanken hij maakt. We controleren dat bij
+      elke modelwijziging.</p>
+  </div>
+</div>
+
+<h2>Eén aanroep</h2>
+<pre><code>curl -X POST {{api_base}}/score \
+  -H "Authorization: Bearer $MNEMECHO_KEY" \
+  -F "text=In februari is het Valentijnsdag." \
+  -F "audio=@attempt.wav"</code></pre>
+<p class="small muted">Het volledige antwoord staat in de <a href="/en/docs/#response" hreflang="en">Engelse referentie</a>.</p>
+
+<h2>Voor wie</h2>
+<div class="grid">
+  <div class="card"><h3>Examentraining</h3><p>Weet dat het spreken klaar is voor het inburgerings- of NT2-examen.</p></div>
+  <div class="card"><h3>Scholen en docenten</h3><p>Spreekhuiswerk klank voor klank nagekeken, zodat lestijd naar lesgeven gaat.</p></div>
+  <div class="card"><h3>AI-tutors en agents</h3><p>Geef je agent een Nederlands oor. De API staat beschreven in <a href="/llms.txt">llms.txt</a> en <a href="/openapi.json">OpenAPI</a>.</p></div>
+  <div class="card"><h3>Stem- en nasynchronisatie-QA</h3><p>Controleer of een Nederlandse stem, synthetisch of menselijk, elke regel goed uitspreekt.</p></div>
+  <div class="card"><h3>Games</h3><p>Spreek om te spelen: een oordeel dat snel genoeg is voor de volgende zet.</p></div>
+  <div class="card"><h3>Spraakdata-teams</h3><p>Past deze opname bij haar zin? Een score per fragment, een vlag als het niet klopt.</p></div>
+</div>
+
+<h2>Standaard privé</h2>
+<p>Je audio en tekst worden in het geheugen beoordeeld en daarna weggegooid. Ze worden
+  nooit opgeslagen en nooit gebruikt om iets te trainen. Per verzoek bewaren we één
+  gebruiksregel (tijd, status, lengte van de audio, score) om je limieten te tellen. Meer
+  in de <a href="/nl/privacy/">privacyverklaring</a>.</p>
+
+<h2>De leerapp</h2>
+<p>mnemEcho begon als app die mensen leert Nederlands uit het hoofd te spreken: luister
+  naar een moedertaalspreker, spreek mee, en zeg de zin daarna vanuit het Engels, met
+  feedback op elke klank. De API draait op dezelfde beoordeling. De app wordt nu getest
+  door een kleine groep; mail <a href="mailto:{{contact}}">{{contact}}</a> om mee te doen.</p>
+
+<h2>Een sleutel krijgen</h2>
+<p>De API is in early access: sleutels zijn gratis en op aanvraag, terwijl we zelf
+  aanmelden voorbereiden. Vertel ons wat je bouwt via
+  <a href="mailto:{{contact}}?subject=mnemEcho%20API-sleutel">{{contact}}</a>. Abonnementen
+  en prijzen staan op de <a href="/nl/pricing/">prijspagina</a>.</p>

@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://mnemecho.com/sitemap.xml

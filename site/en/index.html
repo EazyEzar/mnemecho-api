@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mnemEcho · A Dutch ear for your app</title>
+<meta name="description" content="The mnemEcho Pronunciation API scores Dutch speech against its text: a score from 0 to 100, a verdict, and every word and sound marked. Private by default.">
+<link rel="canonical" href="https://mnemecho.com/en/">
+<link rel="alternate" hreflang="en" href="https://mnemecho.com/en/"><link rel="alternate" hreflang="nl" href="https://mnemecho.com/nl/"><link rel="alternate" hreflang="x-default" href="https://mnemecho.com/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body class="page-home">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <a class="brand" href="/en/" aria-label="mnemEcho">
+    <img class="logo-light" src="/assets/mnemecho-lockup.svg" alt="mnemEcho" width="150" height="31">
+    <img class="logo-dark" src="/assets/mnemecho-lockup-dark.svg" alt="" width="150" height="31">
+  </a>
+  <nav class="nav"><a href="/en/" aria-current="page">Home</a><a href="/en/pricing/">Pricing</a><a href="/en/docs/">API docs</a><a href="/en/status/">Status</a></nav>
+  <a class="lang" href="/nl/" hreflang="nl" lang="nl" data-lang="nl">Nederlands</a>
+</header>
+<main id="main">
+<section class="hero">
+  <p class="tagline">Echo it until it's yours.</p>
+  <h1>A Dutch ear for your app.</h1>
+  <p class="lead">Send a Dutch sentence and a recording of someone saying it. Get back a
+    score from 0 to 100, a verdict, and every word and every sound marked, with a short
+    English tip on each sound to work on.</p>
+  <div class="cta">
+    <a class="button primary" href="/en/docs/">Read the API docs</a>
+    <a class="button secondary" href="mailto:hello@mnemecho.com?subject=mnemEcho%20API%20key">Ask for an early access key</a>
+  </div>
+</section>
+
+<h2>What you get back</h2>
+<div class="grid two">
+  <div class="card">
+    <h3>A score and a verdict</h3>
+    <p>One number, set against native Dutch speakers, and a verdict your code can act on:
+      excellent, pass, marginal fail or hard fail.</p>
+  </div>
+  <div class="card">
+    <h3>Every sound</h3>
+    <p>Each word, each expected sound in it, whether it was said right, what was heard
+      instead, and a plain English tip, such as "the long ee in <span lang="nl">zee</span>".</p>
+  </div>
+  <div class="card">
+    <h3>The wrong word caught</h3>
+    <p>A learner who says the right sentence with one word swapped (<span lang="nl">maart</span>
+      for <span lang="nl">februari</span>) is told which word, not given a pass.</p>
+  </div>
+  <div class="card">
+    <h3>Fair to every voice</h3>
+    <p>A deep, high, male, female or accented voice is never marked down for how it
+      sounds, only for which sounds it makes. We check this on every model change.</p>
+  </div>
+</div>
+
+<h2>One call</h2>
+<pre><code>curl -X POST https://api.mnemecho.com/api/v1/score \
+  -H "Authorization: Bearer $MNEMECHO_KEY" \
+  -F "text=In februari is het Valentijnsdag." \
+  -F "audio=@attempt.wav"</code></pre>
+<pre><code>{
+  "score": 91.6,
+  "verdict": "pass",
+  "worst_word": "februari",
+  "words": [
+    {"word": "februari", "ok": false, "wrong_word": false, "sounds": [
+      {"target": "eː", "heard": "ɛ", "ok": false, "hint": "the long ee in zee"}
+    ]}
+  ]
+}</code></pre>
+<p class="small muted">Trimmed. The <a href="/en/docs/#response">full response</a> has every word and sound.</p>
+
+<h2>Built for</h2>
+<div class="grid">
+  <div class="card"><h3>Exam prep apps</h3><p>Know the speaking is ready before the inburgering or NT2 exam.</p></div>
+  <div class="card"><h3>Schools and teachers</h3><p>Spoken homework marked sound by sound, so lesson time goes to teaching.</p></div>
+  <div class="card"><h3>AI tutors and agents</h3><p>Give your agent a Dutch ear. The API is described in <a href="/llms.txt">llms.txt</a> and <a href="/openapi.json">OpenAPI</a>.</p></div>
+  <div class="card"><h3>Voice and dubbing QA</h3><p>Check that a Dutch voice, synthetic or human, says each line right before release.</p></div>
+  <div class="card"><h3>Games</h3><p>Speak-to-play: a verdict fast enough to drive the next move.</p></div>
+  <div class="card"><h3>Speech data teams</h3><p>Does this recording match its sentence? A score per clip, a flag when it does not.</p></div>
+</div>
+
+<h2>Private by default</h2>
+<p>Your audio and text are scored in memory and dropped. They are never stored and never
+  used to train anything. We keep one usage line per request (time, status, audio length,
+  score) to count your limits. Details in the <a href="/en/privacy/">privacy notice</a>.</p>
+
+<h2>The learner app</h2>
+<p>mnemEcho began as an app that trains people to speak Dutch from memory: hear a native
+  speaker, shadow them, then say the sentence from its English, with feedback on every
+  sound. The API runs on the same scoring. The app is in private testing with a small
+  group; write to <a href="mailto:hello@mnemecho.com">hello@mnemecho.com</a> to join.</p>
+
+<h2>Getting a key</h2>
+<p>The API is in early access: keys are free and given by request while we open
+  self-serve sign up. Tell us what you are building at
+  <a href="mailto:hello@mnemecho.com?subject=mnemEcho%20API%20key">hello@mnemecho.com</a>. Plans and
+  prices are on the <a href="/en/pricing/">pricing page</a>.</p>
+
+</main>
+<footer class="foot">
+  <p>mnemEcho is a product of Invership B.V. · KvK 97741876 · Mechelenstraat 66, 4826 KN Breda</p>
+  <p><a href="mailto:hello@mnemecho.com">hello@mnemecho.com</a> · <a href="/en/terms/">Terms</a> · <a href="/en/privacy/">Privacy</a> · <a href="/en/refunds/">Refunds</a> · <a href="/en/credits/">Credits</a></p>
+</footer>
+</body>
+</html>

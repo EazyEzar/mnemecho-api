@@ -1,0 +1,15 @@
+name: Payment method I need
+description: A way to pay we do not offer yet (for people and for agents).
+labels: [payment]
+body:
+  - type: textarea
+    id: method
+    attributes:
+      label: How would you like to pay?
+      description: For example invoice, iDEAL, SEPA, per call payment by an agent, a protocol such as x402.
+    validations:
+      required: true
+  - type: input
+    id: volume
+    attributes:
+      label: Roughly how many scores a month?

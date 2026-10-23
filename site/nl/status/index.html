@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="nl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Status · mnemEcho</title>
+<meta name="description" content="Of de mnemEcho Uitspraak-API nu antwoordt.">
+<link rel="canonical" href="https://mnemecho.com/nl/status/">
+<link rel="alternate" hreflang="en" href="https://mnemecho.com/en/status/"><link rel="alternate" hreflang="nl" href="https://mnemecho.com/nl/status/"><link rel="alternate" hreflang="x-default" href="https://mnemecho.com/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body class="page-status">
+<a class="skip" href="#main">Naar de inhoud</a>
+<header class="top">
+  <a class="brand" href="/nl/" aria-label="mnemEcho">
+    <img class="logo-light" src="/assets/mnemecho-lockup.svg" alt="mnemEcho" width="150" height="31">
+    <img class="logo-dark" src="/assets/mnemecho-lockup-dark.svg" alt="" width="150" height="31">
+  </a>
+  <nav class="nav"><a href="/nl/">Home</a><a href="/nl/pricing/">Prijzen</a><a href="/nl/docs/">API-docs</a><a href="/nl/status/" aria-current="page">Status</a></nav>
+  <a class="lang" href="/en/status/" hreflang="en" lang="en" data-lang="en">English</a>
+</header>
+<main id="main">
+<h1>Status</h1>
+<div class="card" data-status-url="https://api.mnemecho.com/api/v1/status" data-up="De API antwoordt." data-down="De API antwoordt nu niet.">
+  <p class="status-line"><span class="dot" aria-hidden="true"></span><span data-status-text role="status">Controleren</span></p>
+  <p class="small muted">Gecontroleerd vanuit je browser om <span data-status-when>nu</span>, daarna elke minuut opnieuw.</p>
+</div>
+<p>Deze pagina vraagt <code>GET https://api.mnemecho.com/api/v1/status</code> rechtstreeks op. Antwoordt de API
+  niet en heb je hem nodig, mail dan <a href="mailto:hello@mnemecho.com">hello@mnemecho.com</a> met het
+  tijdstip. Gepland onderhoud melden we hier en in de
+  <a href="https://github.com/EazyEzar/mnemecho-api/blob/main/CHANGELOG.md" hreflang="en">changelog</a>.</p>
+<p>De leerapp en de API draaien op dezelfde machine, dus een storing raakt beide.</p>
+
+</main>
+<footer class="foot">
+  <p>mnemEcho is een product van Invership B.V. · KvK 97741876 · Mechelenstraat 66, 4826 KN Breda</p>
+  <p><a href="mailto:hello@mnemecho.com">hello@mnemecho.com</a> · <a href="/nl/terms/">Voorwaarden</a> · <a href="/nl/privacy/">Privacy</a> · <a href="/nl/refunds/">Terugbetaling</a> · <a href="/nl/credits/">Credits</a></p>
+</footer>
+</body>
+</html>

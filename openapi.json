@@ -1,0 +1,413 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "mnemEcho Pronunciation API",
+    "version": "1.0.0",
+    "summary": "Score Dutch speech against its text, word by word and sound by sound.",
+    "description": "Send Dutch text and a recording; get a 0 to 100 pronunciation score, a verdict, and every word and sound marked. Audio is scored in memory and never stored. Docs: https://mnemecho.com/en/docs/",
+    "contact": {
+      "name": "mnemEcho",
+      "email": "hello@mnemecho.com",
+      "url": "https://mnemecho.com"
+    },
+    "termsOfService": "https://mnemecho.com/en/terms/"
+  },
+  "servers": [
+    {
+      "url": "https://api.mnemecho.com/api/v1"
+    }
+  ],
+  "security": [
+    {
+      "bearer": []
+    },
+    {
+      "apiKey": []
+    }
+  ],
+  "paths": {
+    "/score": {
+      "post": {
+        "operationId": "score",
+        "summary": "Score one recording against one Dutch text",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text",
+                  "audio"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "The Dutch that should be said, 1 to 12 words. Punctuation is ignored.",
+                    "example": "In februari is het Valentijnsdag."
+                  },
+                  "audio": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "wav, flac, ogg or mp3; any sample rate; at most 15 s and 4 MB."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScoreResult"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Empty audio, or no samples",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Key missing or wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Audio over 15 s or upload over 4 MB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Audio not readable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Text missing or over 12 words, or nothing in the audio could be heard",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Over the per minute or per day limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds to wait."
+              }
+            }
+          },
+          "500": {
+            "description": "Server fault",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "operationId": "health",
+        "summary": "Check the key and see its limits",
+        "responses": {
+          "200": {
+            "description": "The key works",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "client": {
+                      "type": "string"
+                    },
+                    "limits": {
+                      "type": "object",
+                      "properties": {
+                        "per_minute": {
+                          "type": "integer"
+                        },
+                        "per_day": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "request": {
+                      "type": "object",
+                      "properties": {
+                        "max_words": {
+                          "type": "integer"
+                        },
+                        "max_audio_s": {
+                          "type": "number"
+                        },
+                        "formats": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Key missing or wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Over the limit",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/status": {
+      "get": {
+        "operationId": "status",
+        "summary": "Whether the service answers (no key)",
+        "security": [],
+        "responses": {
+          "200": {
+            "description": "Up",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearer": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "apiKey": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "X-API-Key"
+      }
+    },
+    "schemas": {
+      "ScoreResult": {
+        "type": "object",
+        "required": [
+          "text",
+          "score",
+          "verdict",
+          "graded_by",
+          "reference",
+          "words",
+          "ipa_target",
+          "ipa_heard",
+          "worst_word",
+          "flags"
+        ],
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The words scored, punctuation removed."
+          },
+          "score": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "0 to 100, one decimal, set against native Dutch speakers."
+          },
+          "verdict": {
+            "type": "string",
+            "enum": [
+              "excellent",
+              "pass",
+              "marginal_fail",
+              "hard_fail"
+            ],
+            "description": "excellent 95 and up, pass 75 to 94.9, marginal_fail 55 to 74.9, hard_fail under 55."
+          },
+          "graded_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Parts that made the score; [\"pronunciation\"] on this endpoint."
+          },
+          "reference": {
+            "type": "boolean",
+            "description": "Always false here: no native recording was compared."
+          },
+          "words": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Word"
+            }
+          },
+          "ipa_target": {
+            "type": "string"
+          },
+          "ipa_heard": {
+            "type": "string"
+          },
+          "worst_word": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The word to work on first."
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Notes such as no_reference, wrong_word=N, unobservable_phones=N, missing_phones=N, reduced_phones=N, insertions=N, text_mismatch. New flags may appear within v1."
+          }
+        }
+      },
+      "Word": {
+        "type": "object",
+        "required": [
+          "word",
+          "ok",
+          "wrong_word",
+          "sounds"
+        ],
+        "properties": {
+          "word": {
+            "type": "string"
+          },
+          "ok": {
+            "type": "boolean",
+            "description": "False if any sound counted against the score, or the word was heard as another word."
+          },
+          "wrong_word": {
+            "type": "boolean",
+            "description": "True when a different word was said in its place. The attempt cannot pass."
+          },
+          "sounds": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Sound"
+            }
+          }
+        }
+      },
+      "Sound": {
+        "type": "object",
+        "required": [
+          "target",
+          "heard",
+          "ok",
+          "quality",
+          "hint"
+        ],
+        "properties": {
+          "target": {
+            "type": "string",
+            "description": "The expected sound, in IPA."
+          },
+          "heard": {
+            "type": "string",
+            "description": "What was heard instead on a wrong sound; equal to target when ok."
+          },
+          "ok": {
+            "type": "boolean",
+            "description": "Whether this sound counted against the score."
+          },
+          "quality": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 1,
+            "description": "How clearly the expected sound was heard (1 is clearly)."
+          },
+          "hint": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "On a wrong sound, a short English tip; otherwise null."
+          }
+        }
+      },
+      "Error": {
+        "type": "object",
+        "required": [
+          "detail"
+        ],
+        "properties": {
+          "detail": {
+            "type": "string",
+            "description": "A message for the developer."
+          }
+        }
+      }
+    }
+  }
+}

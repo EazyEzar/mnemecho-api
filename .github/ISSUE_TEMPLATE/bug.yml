@@ -1,0 +1,24 @@
+name: Bug or wrong score
+description: Something failed, or a score looks wrong.
+labels: [bug]
+body:
+  - type: textarea
+    id: what
+    attributes:
+      label: What happened
+      description: What you sent, what came back, what you expected. Never paste your API key.
+    validations:
+      required: true
+  - type: input
+    id: when
+    attributes:
+      label: When (with time zone)
+      description: Lets us find the request in our usage lines.
+  - type: input
+    id: status
+    attributes:
+      label: HTTP status and detail message
+  - type: textarea
+    id: text
+    attributes:
+      label: The Dutch text sent

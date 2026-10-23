@@ -1,0 +1,42 @@
+title: API-docs
+description: Samenvatting van de mnemEcho Uitspraak-API v1 in het Nederlands. De volledige referentie is in het Engels.
+---
+<h1>API-docs</h1>
+<p class="lead">Dit is een samenvatting. De volledige referentie, met elk veld, elke vlag
+  en elke foutcode, staat in het <a href="/en/docs/" hreflang="en">Engels</a>.</p>
+
+<h2>In het kort</h2>
+<div class="table-wrap"><table>
+  <tr><th>Basis-URL</th><td><code>{{api_base}}</code></td></tr>
+  <tr><th>Authenticatie</th><td><code>Authorization: Bearer &lt;sleutel&gt;</code> of <code>X-API-Key: &lt;sleutel&gt;</code></td></tr>
+  <tr><th>Beoordelen</th><td><code>POST /score</code> met het formulierveld <code>text</code> (1 tot 12 woorden) en het bestand <code>audio</code> (wav, flac, ogg of mp3, maximaal 15 seconden en 4 MB)</td></tr>
+  <tr><th>Sleutel en limieten</th><td><code>GET /health</code></td></tr>
+  <tr><th>Bereikbaar?</th><td><code>GET /status</code>, zonder sleutel</td></tr>
+</table></div>
+
+<pre><code>curl -X POST {{api_base}}/score \
+  -H "Authorization: Bearer $MNEMECHO_KEY" \
+  -F "text=In februari is het Valentijnsdag." \
+  -F "audio=@attempt.wav"</code></pre>
+
+<h2>Wat je terugkrijgt</h2>
+<ul>
+  <li><code>score</code>: 0 tot 100, afgezet tegen moedertaalsprekers. 90 en hoger klinkt als een moedertaalspreker.</li>
+  <li><code>verdict</code>: <code>excellent</code> (95 en hoger), <code>pass</code> (75 tot 94,9), <code>marginal_fail</code> (55 tot 74,9) of <code>hard_fail</code> (onder 55).</li>
+  <li><code>words</code>: per woord of het goed was, of er een ander woord werd gezegd (<code>wrong_word</code>), en per klank wat verwacht werd, wat klonk, en een tip in het Engels.</li>
+  <li><code>worst_word</code>: het woord om eerst aan te werken.</li>
+  <li><code>flags</code>: opmerkingen over de poging.</li>
+</ul>
+
+<h2>Wat wordt beoordeeld</h2>
+<p>Alleen de uitspraak: of elke verwachte klank gezegd werd, en goed, en of elk woord het
+  woord uit de tekst is. Ritme, toonhoogte en klinkerlengte worden hier niet beoordeeld,
+  want daarvoor is een opname van een moedertaalspreker van dezelfde zin nodig. Stemklank
+  wordt nooit beoordeeld.</p>
+
+<h2>Privacy</h2>
+<p>Audio en tekst worden in het geheugen beoordeeld en weggegooid, nooit opgeslagen.</p>
+
+<h2>Voor machines</h2>
+<p><a href="/openapi.json">openapi.json</a> · <a href="/llms.txt">llms.txt</a> ·
+  <a href="https://github.com/EazyEzar/mnemecho-api">GitHub</a></p>

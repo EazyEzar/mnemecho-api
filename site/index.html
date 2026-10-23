@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>mnemEcho</title>
+<meta name="description" content="mnemEcho: speak Dutch from memory, with feedback on every sound. A pronunciation API for Dutch.">
+<link rel="alternate" hreflang="en" href="https://mnemecho.com/en/">
+<link rel="alternate" hreflang="nl" href="https://mnemecho.com/nl/">
+<link rel="alternate" hreflang="x-default" href="https://mnemecho.com/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<script>
+(function () {
+  var pick = null;
+  try { pick = localStorage.getItem("lang"); } catch (e) {}
+  if (pick !== "en" && pick !== "nl") {
+    pick = /^nl\b/i.test(navigator.language || "") ? "nl" : "en";
+    try { localStorage.setItem("lang", pick); } catch (e) {}
+  }
+  location.replace("/" + pick + "/");
+})();
+</script>
+</head>
+<body class="page-root">
+<main id="main" class="chooser">
+  <img class="logo-light" src="/assets/mnemecho-lockup.svg" alt="mnemEcho" width="220" height="45">
+  <img class="logo-dark" src="/assets/mnemecho-lockup-dark.svg" alt="mnemEcho" width="220" height="45">
+  <p><a href="/en/" hreflang="en">English</a> · <a href="/nl/" hreflang="nl" lang="nl">Nederlands</a></p>
+</main>
+</body>
+</html>

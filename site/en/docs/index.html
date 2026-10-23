@@ -1,0 +1,279 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>API docs · mnemEcho</title>
+<meta name="description" content="mnemEcho Pronunciation API v1 reference: POST /score with Dutch text and audio, the response word by word and sound by sound, verdicts, flags, errors and limits.">
+<link rel="canonical" href="https://mnemecho.com/en/docs/">
+<link rel="alternate" hreflang="en" href="https://mnemecho.com/en/docs/"><link rel="alternate" hreflang="nl" href="https://mnemecho.com/nl/docs/"><link rel="alternate" hreflang="x-default" href="https://mnemecho.com/">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/assets/favicon-32.png" sizes="32x32">
+<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
+<link rel="stylesheet" href="/assets/site.css">
+<script src="/assets/site.js" defer></script>
+</head>
+<body class="page-docs">
+<a class="skip" href="#main">Skip to content</a>
+<header class="top">
+  <a class="brand" href="/en/" aria-label="mnemEcho">
+    <img class="logo-light" src="/assets/mnemecho-lockup.svg" alt="mnemEcho" width="150" height="31">
+    <img class="logo-dark" src="/assets/mnemecho-lockup-dark.svg" alt="" width="150" height="31">
+  </a>
+  <nav class="nav"><a href="/en/">Home</a><a href="/en/pricing/">Pricing</a><a href="/en/docs/" aria-current="page">API docs</a><a href="/en/status/">Status</a></nav>
+  <a class="lang" href="/nl/docs/" hreflang="nl" lang="nl" data-lang="nl">Nederlands</a>
+</header>
+<main id="main">
+<h1>API docs</h1>
+<p class="lead">Version 1. Send a short Dutch text and a recording of someone saying it;
+  get back a score, a verdict, and a word by word, sound by sound breakdown.</p>
+
+<div class="docs">
+<nav class="toc" aria-label="On this page">
+  <ul>
+    <li><a href="#start">Start</a></li>
+    <li><a href="#score">POST /score</a></li>
+    <li><a href="#response">The response</a></li>
+    <li><a href="#verdicts">Verdicts</a></li>
+    <li><a href="#flags">Flags</a></li>
+    <li><a href="#feedback">Showing feedback</a></li>
+    <li><a href="#health">GET /health</a></li>
+    <li><a href="#status">GET /status</a></li>
+    <li><a href="#errors">Errors</a></li>
+    <li><a href="#limits">Limits</a></li>
+    <li><a href="#tips">Good practice</a></li>
+    <li><a href="#machine">For machines</a></li>
+  </ul>
+</nav>
+<article>
+
+<h2 id="start">Start</h2>
+<div class="table-wrap"><table>
+  <tr><th>Base URL</th><td><code>https://api.mnemecho.com/api/v1</code></td></tr>
+  <tr><th>Authentication</th><td><code>Authorization: Bearer &lt;key&gt;</code> or <code>X-API-Key: &lt;key&gt;</code></td></tr>
+  <tr><th>Transport</th><td>HTTPS only</td></tr>
+  <tr><th>Format</th><td>Requests as <code>multipart/form-data</code>, answers as JSON</td></tr>
+</table></div>
+<p>Keys are given by request during early access: <a href="mailto:hello@mnemecho.com?subject=mnemEcho%20API%20key">hello@mnemecho.com</a>.
+  Keep your key on your server, never in a web page or a shipped app: anyone holding it
+  can spend your quota. If it leaks, tell us and we rotate it; the old key stops at once.</p>
+
+<h3>What is graded</h3>
+<ul>
+  <li><strong>Graded:</strong> pronunciation, meaning whether each expected Dutch sound was
+    said, and said right, and whether each word is the word in the text.</li>
+  <li><strong>Not graded:</strong> rhythm, pitch and vowel length. These need a native
+    recording of the same sentence to compare against, and your own text has none.
+    Every response says so (<code>graded_by</code>, <code>reference</code>).</li>
+  <li><strong>Never graded:</strong> voice quality. A deep, high, male, female or accented
+    voice is not marked down for how it sounds, only for which sounds it makes.</li>
+</ul>
+
+<h2 id="score">POST /score</h2>
+<p>Score one recording against one Dutch text.</p>
+<div class="table-wrap"><table>
+  <tr><th>Field</th><th>Type</th><th>Rules</th></tr>
+  <tr><td><code>text</code></td><td>form field</td><td>The Dutch that should be said. 1 to 12 words. Punctuation is ignored.</td></tr>
+  <tr><td><code>audio</code></td><td>file</td><td>One recording: wav, flac, ogg or mp3. Any sample rate, mono or stereo. At most 15 seconds and 4 MB.</td></tr>
+</table></div>
+
+<h3>curl</h3>
+<pre><code>curl -X POST https://api.mnemecho.com/api/v1/score \
+  -H "Authorization: Bearer $MNEMECHO_KEY" \
+  -F "text=In februari is het Valentijnsdag." \
+  -F "audio=@attempt.wav"</code></pre>
+
+<h3>Python</h3>
+<pre><code>import os, requests
+
+resp = requests.post(
+    "https://api.mnemecho.com/api/v1/score",
+    headers={"Authorization": f"Bearer {os.environ['MNEMECHO_KEY']}"},
+    data={"text": "In februari is het Valentijnsdag."},
+    files={"audio": open("attempt.wav", "rb")},
+    timeout=30,
+)
+resp.raise_for_status()
+result = resp.json()
+print(result["score"], result["verdict"], result["worst_word"])</code></pre>
+
+<h3>JavaScript (Node 18 and later)</h3>
+<pre><code>import { readFile } from "node:fs/promises";
+
+const form = new FormData();
+form.append("text", "In februari is het Valentijnsdag.");
+form.append("audio", new Blob([await readFile("attempt.wav")], { type: "audio/wav" }), "attempt.wav");
+
+const resp = await fetch("https://api.mnemecho.com/api/v1/score", {
+  method: "POST",
+  headers: { Authorization: `Bearer ${process.env.MNEMECHO_KEY}` },
+  body: form,
+});
+if (!resp.ok) throw new Error(`${resp.status} ${(await resp.json()).detail}`);
+const result = await resp.json();
+console.log(result.score, result.verdict, result.worst_word);</code></pre>
+<p class="small muted">Full runnable examples are in the
+  <a href="https://github.com/EazyEzar/mnemecho-api/tree/main/examples">GitHub repository</a>.</p>
+
+<h2 id="response">The response</h2>
+<p>A real response for a native speaker saying <span lang="nl">"In februari is het Valentijnsdag"</span>.
+  Two words shown in full; the others look like <code>"In"</code>.</p>
+<pre><code>{
+  "text": "In februari is het Valentijnsdag",
+  "score": 91.6,
+  "verdict": "pass",
+  "graded_by": ["pronunciation"],
+  "reference": false,
+  "words": [
+    {"word": "In", "ok": true, "wrong_word": false, "sounds": [
+      {"target": "ɪ", "heard": "ɪ", "ok": true, "quality": 0.9997, "hint": null},
+      {"target": "n", "heard": "n", "ok": true, "quality": 1.0, "hint": null}
+    ]},
+    {"word": "februari", "ok": false, "wrong_word": false, "sounds": [
+      {"target": "f",  "heard": "f",  "ok": true,  "quality": 0.9993, "hint": null},
+      {"target": "eː", "heard": "ɛ",  "ok": false, "quality": 0.6629,
+       "hint": "the long ee in zee"},
+      {"target": "b",  "heard": "b",  "ok": true,  "quality": 0.9999, "hint": null},
+      ...
+    ]},
+    ...
+  ],
+  "ipa_target": "ɪ n f eː b r y aː r i ɪ s h ə t v aː l ə n t ɛɪ n z d ɑ x",
+  "ipa_heard":  "ɪ n f ɛ b r y aː r i ɪ s h ə t v aː l ə t ɛɪ n z d ɑ x",
+  "worst_word": "februari",
+  "flags": ["unobservable_phones=1", "no_reference"]
+}</code></pre>
+
+<div class="table-wrap"><table>
+  <tr><th>Field</th><th>Meaning</th></tr>
+  <tr><td><code>text</code></td><td>The words that were scored, punctuation removed.</td></tr>
+  <tr><td><code>score</code></td><td>0 to 100, one decimal. Set against native Dutch speakers, so 90 and up is native-like, not merely good.</td></tr>
+  <tr><td><code>verdict</code></td><td><code>excellent</code>, <code>pass</code>, <code>marginal_fail</code> or <code>hard_fail</code>. See <a href="#verdicts">verdicts</a>.</td></tr>
+  <tr><td><code>graded_by</code></td><td>Which parts made the score. Always <code>["pronunciation"]</code> on this endpoint.</td></tr>
+  <tr><td><code>reference</code></td><td>Always <code>false</code>: no native recording was compared.</td></tr>
+  <tr><td><code>words</code></td><td>One entry per word, in order.</td></tr>
+  <tr><td><code>words[].ok</code></td><td><code>false</code> if any of its sounds counted against the score, or if it was heard as another word.</td></tr>
+  <tr><td><code>words[].wrong_word</code></td><td><code>true</code> when a different word was said in its place (<span lang="nl">maart</span> for <span lang="nl">februari</span>). The attempt cannot pass.</td></tr>
+  <tr><td><code>words[].sounds</code></td><td>One entry per expected sound (phoneme) in the word.</td></tr>
+  <tr><td><code>sounds[].target</code></td><td>The sound expected, in IPA. <code>ː</code> marks a long vowel.</td></tr>
+  <tr><td><code>sounds[].heard</code></td><td>What was heard instead, on a wrong sound. Equal to <code>target</code> when <code>ok</code>.</td></tr>
+  <tr><td><code>sounds[].ok</code></td><td>Whether this sound counted against the score.</td></tr>
+  <tr><td><code>sounds[].quality</code></td><td>0 to 1, how clearly the expected sound was heard (1 is clearly).</td></tr>
+  <tr><td><code>sounds[].hint</code></td><td>On a wrong sound, a short English tip such as "the long ee in <span lang="nl">zee</span>". Otherwise <code>null</code>.</td></tr>
+  <tr><td><code>ipa_target</code></td><td>All expected sounds, space separated.</td></tr>
+  <tr><td><code>ipa_heard</code></td><td>What was heard, sound by sound. Useful for debugging, too raw to show players.</td></tr>
+  <tr><td><code>worst_word</code></td><td>The word to work on first, or <code>null</code>.</td></tr>
+  <tr><td><code>flags</code></td><td>Notes on the attempt. See <a href="#flags">flags</a>.</td></tr>
+</table></div>
+
+<h3>A word swapped</h3>
+<p>The same recording sent with the text <span lang="nl">"In maart is het Valentijnsdag."</span>
+  The speaker said <span lang="nl">februari</span>, so <span lang="nl">maart</span> is marked as
+  a wrong word and the attempt does not pass.</p>
+<pre><code>{
+  "score": 74.0,
+  "verdict": "marginal_fail",
+  "words": [
+    ...
+    {"word": "maart", "ok": false, "wrong_word": true, "sounds": [
+      {"target": "m", "heard": "b", "ok": false, "quality": 0.0013, "hint": "the m in mens"},
+      ...
+    ]},
+    ...
+  ],
+  "worst_word": "maart",
+  "flags": ["unobservable_phones=1", "wrong_word=1", "no_reference"]
+}</code></pre>
+
+<h2 id="verdicts">Verdicts</h2>
+<p>Use <code>verdict</code> for your logic, and <code>worst_word</code> plus the wrong sounds for feedback.</p>
+<div class="table-wrap"><table>
+  <tr><th>Verdict</th><th>Score</th><th>Meaning</th><th>Suggested action</th></tr>
+  <tr><td><code>excellent</code></td><td>95 to 100</td><td>Native-like.</td><td>Full reward.</td></tr>
+  <tr><td><code>pass</code></td><td>75 to 94.9</td><td>Understood and correct, small slips.</td><td>Accept; show the one wrong sound, if any.</td></tr>
+  <tr><td><code>marginal_fail</code></td><td>55 to 74.9</td><td>Recognisable, but a word or sounds were off.</td><td>Ask for another try; show <code>worst_word</code>.</td></tr>
+  <tr><td><code>hard_fail</code></td><td>under 55</td><td>Mostly wrong, or a different sentence.</td><td>Ask again; play your model audio first.</td></tr>
+</table></div>
+
+<h2 id="flags">Flags</h2>
+<div class="table-wrap"><table>
+  <tr><th>Flag</th><th>Meaning</th></tr>
+  <tr><td><code>no_reference</code></td><td>Always present: rhythm and pitch were not graded.</td></tr>
+  <tr><td><code>wrong_word=N</code></td><td>N words were heard as other words. See <code>words[].wrong_word</code>.</td></tr>
+  <tr><td><code>unobservable_phones=N</code></td><td>N expected sounds were not heard in their place at all. A few are forgiven; more count as missing.</td></tr>
+  <tr><td><code>missing_phones=N</code></td><td>N sounds were judged left out, and were charged.</td></tr>
+  <tr><td><code>reduced_phones=N</code></td><td>N sounds that Dutch speakers often drop were dropped, and not charged.</td></tr>
+  <tr><td><code>insertions=N</code></td><td>N extra sounds were heard that the text does not have.</td></tr>
+  <tr><td><code>text_mismatch</code></td><td>Most of the text was not heard: something else was said, or the wrong clip was sent.</td></tr>
+</table></div>
+<p class="small muted">New flags may be added within v1. Ignore flags you do not know.</p>
+
+<h2 id="feedback">Showing feedback</h2>
+<ol>
+  <li>Lead with the verdict in plain words.</li>
+  <li>Highlight <code>worst_word</code> in the sentence. If its <code>wrong_word</code> is true, say which word was expected.</li>
+  <li>Under it, show each sound where <code>ok</code> is false, with its <code>hint</code>. Skip the IPA unless your users know it.</li>
+  <li>Show one or two sounds per try. People fix one thing at a time.</li>
+</ol>
+
+<h2 id="health">GET /health</h2>
+<p>Checks your key and shows your limits. Needs a key.</p>
+<pre><code>curl https://api.mnemecho.com/api/v1/health -H "Authorization: Bearer $MNEMECHO_KEY"</code></pre>
+<pre><code>{"ok": true, "client": "your-name",
+ "limits": {"per_minute": 20, "per_day": 500},
+ "request": {"max_words": 12, "max_audio_s": 15.0,
+             "formats": "wav, flac, ogg or mp3"}}</code></pre>
+
+<h2 id="status">GET /status</h2>
+<p>Whether the service answers. No key, readable from any origin. The
+  <a href="/en/status/">status page</a> uses it.</p>
+<pre><code>curl https://api.mnemecho.com/api/v1/status
+{"ok": true}</code></pre>
+
+<h2 id="errors">Errors</h2>
+<p>Every error is JSON with a <code>detail</code> message written for a developer, for example
+  <code>{"detail": "send the Dutch text as the form field 'text'"}</code>.</p>
+<div class="table-wrap"><table>
+  <tr><th>Status</th><th>When</th><th>What to do</th></tr>
+  <tr><td>400</td><td>Empty audio, or audio with no samples.</td><td>Check the recording step.</td></tr>
+  <tr><td>401</td><td>Key missing or wrong.</td><td>Check the <code>Authorization</code> header.</td></tr>
+  <tr><td>413</td><td>Audio over 15 seconds, or upload over 4 MB.</td><td>Trim silence; send one sentence per call.</td></tr>
+  <tr><td>415</td><td>Audio not readable.</td><td>Send wav, flac, ogg or mp3. Browser webm recordings must be converted first.</td></tr>
+  <tr><td>422</td><td>Text missing, over 12 words, or nothing in the audio could be heard.</td><td>For "could not be heard", ask for another try, louder. This is not a low score.</td></tr>
+  <tr><td>429</td><td>Over your per minute or per day limit.</td><td>Wait the seconds in the <code>Retry-After</code> header.</td></tr>
+  <tr><td>500</td><td>Our fault.</td><td>Retry once; if it repeats, tell us the time.</td></tr>
+</table></div>
+
+<h2 id="limits">Limits</h2>
+<ul>
+  <li>Each key has a per minute and a per day limit; <code>GET /health</code> shows yours. The day resets at 00:00 UTC.</li>
+  <li>Failed requests (400, 413, 415, 422) count toward the limits; 429 answers do not.</li>
+  <li>Our network also blocks bursts of more than 10 requests in 10 seconds.</li>
+</ul>
+
+<h2 id="tips">Good practice</h2>
+<ul>
+  <li>Send sentences, not single words. One word said alone is often not heard at all (422). Three words or more is reliable.</li>
+  <li>Record 16 kHz mono wav if you can choose. Other formats work.</li>
+  <li>Start recording before the speaker starts and stop shortly after. Silence within the 15 seconds is fine.</li>
+  <li>Background noise, music, or Bluetooth earbuds with noise suppression lower the score. A wired or built-in microphone in a quiet room works best.</li>
+  <li>Write numbers out (<span lang="nl">twaalf</span>, not 12). Names and English loanwords may be expected with a pronunciation your users do not use.</li>
+  <li>Call from your server, not the user's device, so your key stays secret.</li>
+</ul>
+
+<h2 id="machine">For machines</h2>
+<ul>
+  <li><a href="/openapi.json">openapi.json</a>: the OpenAPI 3.1 description.</li>
+  <li><a href="/llms.txt">llms.txt</a>: a short guide for AI agents.</li>
+  <li><a href="https://github.com/EazyEzar/mnemecho-api">GitHub</a>: examples, changelog, and issues for bugs and requests.</li>
+</ul>
+</article>
+</div>
+
+</main>
+<footer class="foot">
+  <p>mnemEcho is a product of Invership B.V. · KvK 97741876 · Mechelenstraat 66, 4826 KN Breda</p>
+  <p><a href="mailto:hello@mnemecho.com">hello@mnemecho.com</a> · <a href="/en/terms/">Terms</a> · <a href="/en/privacy/">Privacy</a> · <a href="/en/refunds/">Refunds</a> · <a href="/en/credits/">Credits</a></p>
+</footer>
+</body>
+</html>

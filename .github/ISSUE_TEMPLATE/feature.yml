@@ -1,0 +1,15 @@
+name: Feature I need
+description: Something the API does not do yet.
+labels: [request]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: What do you need, and for what?
+    validations:
+      required: true
+  - type: dropdown
+    id: who
+    attributes:
+      label: What are you building?
+      options: [Learning app, School or teacher tool, Game, AI agent or tutor, Voice or dubbing QA, Speech data, Research, Other]

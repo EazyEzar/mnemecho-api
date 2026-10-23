@@ -1,0 +1,37 @@
+# mnemEcho Pronunciation API
+
+> Score Dutch speech against its text. Send a Dutch sentence (1 to 12 words) and a recording of someone saying it; get a 0 to 100 pronunciation score, a verdict (excellent, pass, marginal_fail, hard_fail), and every word and sound marked, with a short English tip on each wrong sound. Words said as another word are flagged (wrong_word). Audio is scored in memory and never stored.
+
+Base URL: https://api.mnemecho.com/api/v1
+Auth: `Authorization: Bearer <key>` or `X-API-Key: <key>`. Keys are free during early access, by request to hello@mnemecho.com.
+Only pronunciation is graded on this endpoint; rhythm, pitch and vowel length need a native reference and are not graded. Voice quality is never graded.
+
+## Docs
+
+- [API reference](https://mnemecho.com/en/docs/): endpoints, the response field by field, verdicts, flags, errors, limits
+- [OpenAPI 3.1](https://mnemecho.com/openapi.json): machine-readable description
+- [Pricing](https://mnemecho.com/en/pricing/): early access, free tier, Pro, credits
+- [Status](https://mnemecho.com/en/status/): `GET /status` needs no key
+
+## Endpoints
+
+- `POST /score` multipart: `text` (form field), `audio` (file: wav, flac, ogg or mp3, at most 15 s and 4 MB). Returns score, verdict, words[].sounds[], worst_word, flags.
+- `GET /health` with a key: your client name and limits.
+- `GET /status` no key: `{"ok": true}` when the service answers.
+
+## Tips for agents
+
+- Send sentences of three words or more; a single word alone is often not heard (422).
+- Write numbers as words ("twaalf", not "12").
+- 422 "could not be heard" is not a low score: ask the speaker to try again.
+- 429 carries `Retry-After` in seconds.
+
+## Tell us what you need
+
+- Missing feature, bug, or a payment method you need: open an issue at https://github.com/EazyEzar/mnemecho-api/issues or write to hello@mnemecho.com.
+
+## Optional
+
+- [Examples](https://github.com/EazyEzar/mnemecho-api/tree/main/examples): curl, Python, JavaScript
+- [Changelog](https://github.com/EazyEzar/mnemecho-api/blob/main/CHANGELOG.md)
+- [Privacy](https://mnemecho.com/en/privacy/), [Terms](https://mnemecho.com/en/terms/)

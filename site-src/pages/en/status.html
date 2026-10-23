@@ -1,0 +1,13 @@
+title: Status
+description: Whether the mnemEcho Pronunciation API is answering right now.
+---
+<h1>Status</h1>
+<div class="card" data-status-url="{{api_base}}/status" data-up="The API is answering." data-down="The API is not answering right now.">
+  <p class="status-line"><span class="dot" aria-hidden="true"></span><span data-status-text role="status">Checking</span></p>
+  <p class="small muted">Checked from your browser at <span data-status-when>now</span>, again every minute.</p>
+</div>
+<p>This page asks <code>GET {{api_base}}/status</code> directly. If it says the API is not
+  answering and you need it, write to <a href="mailto:{{contact}}">{{contact}}</a> with the
+  time. Planned maintenance is announced here and in the
+  <a href="https://github.com/EazyEzar/mnemecho-api/blob/main/CHANGELOG.md">changelog</a>.</p>
+<p>The learner app and the API run on the same machine, so an outage reaches both.</p>

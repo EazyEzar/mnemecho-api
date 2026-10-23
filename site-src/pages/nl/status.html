@@ -1,0 +1,13 @@
+title: Status
+description: Of de mnemEcho Uitspraak-API nu antwoordt.
+---
+<h1>Status</h1>
+<div class="card" data-status-url="{{api_base}}/status" data-up="De API antwoordt." data-down="De API antwoordt nu niet.">
+  <p class="status-line"><span class="dot" aria-hidden="true"></span><span data-status-text role="status">Controleren</span></p>
+  <p class="small muted">Gecontroleerd vanuit je browser om <span data-status-when>nu</span>, daarna elke minuut opnieuw.</p>
+</div>
+<p>Deze pagina vraagt <code>GET {{api_base}}/status</code> rechtstreeks op. Antwoordt de API
+  niet en heb je hem nodig, mail dan <a href="mailto:{{contact}}">{{contact}}</a> met het
+  tijdstip. Gepland onderhoud melden we hier en in de
+  <a href="https://github.com/EazyEzar/mnemecho-api/blob/main/CHANGELOG.md" hreflang="en">changelog</a>.</p>
+<p>De leerapp en de API draaien op dezelfde machine, dus een storing raakt beide.</p>

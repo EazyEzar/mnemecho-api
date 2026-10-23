@@ -1,0 +1,12 @@
+{
+  "base_url": "https://mnemecho.com",
+  "api_base": "https://api.mnemecho.com/api/v1",
+  "contact": "hello@mnemecho.com",
+  "billing": "billing@mnemecho.com",
+  "company": "Invership B.V.",
+  "kvk": "97741876",
+  "address": "Mechelenstraat 66, 4826 KN Breda",
+  "legal_draft": true,
+  "updated": "2026-10-23",
+  "pages": ["", "pricing", "docs", "status", "credits", "terms", "privacy", "refunds"]
+}
