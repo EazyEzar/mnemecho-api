@@ -58,7 +58,7 @@ description: mnemEcho Pronunciation API v1 reference: POST /score/text with Dutc
 <div class="table-wrap"><table>
   <tr><th>Tier</th><th>Quota</th><th>Rate</th><th>Card</th></tr>
   <tr><td>No key (try it)</td><td>3 scores an hour per address</td><td>3 a minute</td><td>No</td></tr>
-  <tr><td>Free</td><td>10 scores an hour, 100 a day</td><td>10 a minute</td><td>No</td></tr>
+  <tr><td>Free</td><td>5 scores an hour, 10 a day</td><td>5 a minute</td><td>No</td></tr>
   <tr><td>Trial, Pro, credits</td><td>Opening soon: see <a href="/en/pricing/">pricing</a></td><td>60 a minute</td><td>Yes</td></tr>
 </table></div>
 <p>Every scored response names the <code>tier</code> that paid for it, and the
@@ -222,10 +222,10 @@ console.log(result.score, result.verdict, result.worst_word);</code></pre>
 <p>What your account has left, plan by plan and window by window. Needs a key, costs nothing.</p>
 <pre><code>curl {{api_base}}/usage -H "Authorization: Bearer $MNEMECHO_KEY"</code></pre>
 <pre><code>{"key": "mne_u8Hf", "model": "nl-2026-10",
- "plans": [{"tier": "api_free", "per_minute": 10, "scopes": ["score:text"], "ends_at": null,
+ "plans": [{"tier": "api_free", "per_minute": 5, "scopes": ["score:text"], "ends_at": null,
             "windows": {
-              "hour": {"limit": 10, "used": 3, "left": 7, "resets_at": "2026-10-24T10:42:05+00:00"},
-              "day": {"limit": 100, "used": 12, "left": 88, "resets_at": "2026-10-25T00:00:00+00:00"}}}]}</code></pre>
+              "hour": {"limit": 5, "used": 3, "left": 2, "resets_at": "2026-10-24T10:42:05+00:00"},
+              "day": {"limit": 10, "used": 7, "left": 3, "resets_at": "2026-10-25T00:00:00+00:00"}}}]}</code></pre>
 <p>The hour is a rolling 60 minutes: <code>resets_at</code> is when the oldest score in
   it drops out. The day is the UTC day.</p>
 

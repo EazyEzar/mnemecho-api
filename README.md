@@ -15,7 +15,7 @@ mnemecho.com. The scoring service itself is not open source.
 ## Quick start
 
 Make a free key at https://account.mnemecho.com/keys (email or Google sign in, no
-card): 10 scores an hour, 100 a day. With no key you can try 3 scores an hour.
+card): 5 scores an hour, 10 a day. With no key you can try 3 scores an hour.
 
 ```sh
 export MNEMECHO_KEY=...

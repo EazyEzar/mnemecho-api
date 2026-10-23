@@ -3,7 +3,7 @@
 > Score Dutch speech against its text. Send a Dutch sentence (1 to 12 words) and a recording of someone saying it; get a 0 to 100 pronunciation score, a verdict (excellent, pass, marginal_fail, hard_fail), and every word and sound marked, with a short English tip on each wrong sound. Words said as another word are flagged (wrong_word). Audio is scored in memory and never stored.
 
 Base URL: https://api.mnemecho.com/api/v1
-Auth: `Authorization: Bearer <key>` or `X-API-Key: <key>`. Free keys in a minute at https://account.mnemecho.com/keys (email or Google, no card): 10 scores an hour, 100 a day. With no key: 3 scores an hour per address, to try it.
+Auth: `Authorization: Bearer <key>` or `X-API-Key: <key>`. Free keys in a minute at https://account.mnemecho.com/keys (email or Google, no card): 5 scores an hour, 10 a day. With no key: 3 scores an hour per address, to try it.
 Only pronunciation is graded on this endpoint; rhythm, pitch and vowel length need a native reference and are not graded. Voice quality is never graded.
 
 ## Docs
