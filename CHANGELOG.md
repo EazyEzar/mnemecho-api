@@ -7,8 +7,9 @@ flags may be added; existing ones keep working.
 
 - Self-serve keys: make, list and revoke them at https://account.mnemecho.com/keys.
   An account holds up to five keys sharing one quota.
-- Tiers: no key (3 scores an hour per address), free (5 an hour, 10 a day). Paid
-  plans follow.
+- Tiers: no key (3 scores an hour per address), free (5 an hour, 10 a day), both on
+  five example sentences (403 `fixed_texts_only` otherwise) with an hourly limit shared
+  by all callers. Paid plans follow.
 - `POST /score/text`: the new name of `POST /score`, which keeps working.
 - `GET /usage`: each plan and what is left in each window.
 - `POST /feedback`: needs, bugs and payment methods wanted; no key needed.

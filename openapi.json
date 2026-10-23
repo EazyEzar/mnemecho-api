@@ -132,7 +132,7 @@
             }
           },
           "403": {
-            "description": "The plan does not cover this endpoint (scope_missing)",
+            "description": "The plan does not cover this endpoint (scope_missing), or the free or no key tier was sent a sentence outside fixed_texts (fixed_texts_only)",
             "content": {
               "application/json": {
                 "schema": {
@@ -318,7 +318,7 @@
             }
           },
           "403": {
-            "description": "The plan does not cover this endpoint (scope_missing)",
+            "description": "The plan does not cover this endpoint (scope_missing), or the free or no key tier was sent a sentence outside fixed_texts (fixed_texts_only)",
             "content": {
               "application/json": {
                 "schema": {
@@ -798,6 +798,7 @@
               "quota_exhausted",
               "no_plan",
               "scope_missing",
+              "fixed_texts_only",
               "not_found",
               "too_large",
               "unsupported_audio",
