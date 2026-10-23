@@ -3,7 +3,7 @@
 > Score Dutch speech against its text. Send a Dutch sentence (1 to 12 words) and a recording of someone saying it; get a 0 to 100 pronunciation score, a verdict (excellent, pass, marginal_fail, hard_fail), and every word and sound marked, with a short English tip on each wrong sound. Words said as another word are flagged (wrong_word). Audio is scored in memory and never stored.
 
 Base URL: https://api.mnemecho.com/api/v1
-Auth: `Authorization: Bearer <key>` or `X-API-Key: <key>`. Keys are free during early access, by request to hello@mnemecho.com.
+Auth: `Authorization: Bearer <key>` or `X-API-Key: <key>`. Free keys in a minute at https://account.mnemecho.com/keys (email or Google, no card): 10 scores an hour, 100 a day. With no key: 3 scores an hour per address, to try it.
 Only pronunciation is graded on this endpoint; rhythm, pitch and vowel length need a native reference and are not graded. Voice quality is never graded.
 
 ## Docs
@@ -15,8 +15,10 @@ Only pronunciation is graded on this endpoint; rhythm, pitch and vowel length ne
 
 ## Endpoints
 
-- `POST /score` multipart: `text` (form field), `audio` (file: wav, flac, ogg or mp3, at most 15 s and 4 MB). Returns score, verdict, words[].sounds[], worst_word, flags.
-- `GET /health` with a key: your client name and limits.
+- `POST /score/text` multipart: `text` (form field), `audio` (file: wav, flac, ogg or mp3, at most 15 s and 4 MB). Returns score, verdict, words[].sounds[], worst_word, flags, model, tier. `POST /score` is the same call.
+- `GET /usage` with a key: each plan on the account and what is left this hour, day or month. Costs nothing.
+- `POST /feedback` no key needed: JSON `{"kind": "need|bug|payment_method|other", "message": "...", "contact": "..."}`. Tell us what you need, including a way to pay we do not take yet.
+- `GET /health` with a key: your client name, plans, and what a request may hold.
 - `GET /status` no key: `{"ok": true}` when the service answers.
 
 ## Tips for agents
@@ -24,7 +26,10 @@ Only pronunciation is graded on this endpoint; rhythm, pitch and vowel length ne
 - Send sentences of three words or more; a single word alone is often not heard (422).
 - Write numbers as words ("twaalf", not "12").
 - 422 "could not be heard" is not a low score: ask the speaker to try again.
-- 429 carries `Retry-After` in seconds.
+- Errors are JSON with a stable `error` code and a `detail` text.
+- 429 `rate_limited`: too many in a minute; wait `Retry-After` seconds.
+- 402 `quota_exhausted`: the quota is spent. The body has `resets_at`, `upgrade_url`, `credits_url` and `request_method_url`; wait or tell your human. 402 `no_plan`: make a free key at `keys_url`.
+- Quota counts scored recordings only; a failed request (4xx) costs no quota.
 
 ## Tell us what you need
 

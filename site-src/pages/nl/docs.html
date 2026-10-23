@@ -9,12 +9,14 @@ description: Samenvatting van de mnemEcho Uitspraak-API v1 in het Nederlands. De
 <div class="table-wrap"><table>
   <tr><th>Basis-URL</th><td><code>{{api_base}}</code></td></tr>
   <tr><th>Authenticatie</th><td><code>Authorization: Bearer &lt;sleutel&gt;</code> of <code>X-API-Key: &lt;sleutel&gt;</code></td></tr>
-  <tr><th>Beoordelen</th><td><code>POST /score</code> met het formulierveld <code>text</code> (1 tot 12 woorden) en het bestand <code>audio</code> (wav, flac, ogg of mp3, maximaal 15 seconden en 4 MB)</td></tr>
-  <tr><th>Sleutel en limieten</th><td><code>GET /health</code></td></tr>
+  <tr><th>Sleutel</th><td>Gratis op <a href="https://account.mnemecho.com/keys">account.mnemecho.com/keys</a>; zonder sleutel 3 scores per uur om te proberen</td></tr>
+  <tr><th>Beoordelen</th><td><code>POST /score/text</code> met het formulierveld <code>text</code> (1 tot 12 woorden) en het bestand <code>audio</code> (wav, flac, ogg of mp3, maximaal 15 seconden en 4 MB)</td></tr>
+  <tr><th>Wat er over is</th><td><code>GET /usage</code>; een opgebruikt quotum geeft 402 met <code>resets_at</code></td></tr>
+  <tr><th>Iets missen?</th><td><code>POST /feedback</code>, zonder sleutel</td></tr>
   <tr><th>Bereikbaar?</th><td><code>GET /status</code>, zonder sleutel</td></tr>
 </table></div>
 
-<pre><code>curl -X POST {{api_base}}/score \
+<pre><code>curl -X POST {{api_base}}/score/text \
   -H "Authorization: Bearer $MNEMECHO_KEY" \
   -F "text=In februari is het Valentijnsdag." \
   -F "audio=@attempt.wav"</code></pre>

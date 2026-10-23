@@ -13,11 +13,11 @@ API = os.environ.get("MNEMECHO_API", "https://api.mnemecho.com/api/v1")
 
 
 def score(audio_path: str, text: str) -> dict:
-    """POST /score, waiting once if the limit answers 429."""
+    """POST /score/text, waiting once if the limit answers 429."""
     for attempt in range(2):
         with open(audio_path, "rb") as audio:
             resp = requests.post(
-                f"{API}/score",
+                f"{API}/score/text",
                 headers={"Authorization": f"Bearer {os.environ['MNEMECHO_KEY']}"},
                 data={"text": text},
                 files={"audio": audio},

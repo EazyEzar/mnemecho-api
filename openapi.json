@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "mnemEcho Pronunciation API",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "summary": "Score Dutch speech against its text, word by word and sound by sound.",
     "description": "Send Dutch text and a recording; get a 0 to 100 pronunciation score, a verdict, and every word and sound marked. Audio is scored in memory and never stored. Docs: https://mnemecho.com/en/docs/",
     "contact": {
@@ -26,9 +26,9 @@
     }
   ],
   "paths": {
-    "/score": {
+    "/score/text": {
       "post": {
-        "operationId": "score",
+        "operationId": "scoreText",
         "summary": "Score one recording against one Dutch text",
         "requestBody": {
           "required": true,
@@ -65,6 +65,32 @@
                   "$ref": "#/components/schemas/ScoreResult"
                 }
               }
+            },
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The limit of the window closest to running out."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "What is left in it after this call."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "When it frees up, Unix seconds."
+              },
+              "X-RateLimit-Window": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "hour, day, month, total or credits."
+              }
             }
           },
           "400": {
@@ -78,7 +104,35 @@
             }
           },
           "401": {
-            "description": "Key missing or wrong",
+            "description": "Key wrong or revoked (with no key at all, the call is on the try it tier)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Quota spent (quota_exhausted) or no plan on the account (no_plan)",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until a unit frees up, when one will."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentNeeded"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The plan does not cover this endpoint (scope_missing)",
             "content": {
               "application/json": {
                 "schema": {
@@ -118,7 +172,7 @@
             }
           },
           "429": {
-            "description": "Over the per minute or per day limit",
+            "description": "Too many calls in the last minute (rate_limited)",
             "content": {
               "application/json": {
                 "schema": {
@@ -145,13 +199,208 @@
               }
             }
           }
-        }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "apiKey": []
+          },
+          {}
+        ],
+        "description": "With no key, the call is on the try it tier: 3 scores an hour per address."
+      }
+    },
+    "/score": {
+      "post": {
+        "operationId": "score",
+        "summary": "Score one recording (first name of POST /score/text, kept)",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "text",
+                  "audio"
+                ],
+                "properties": {
+                  "text": {
+                    "type": "string",
+                    "description": "The Dutch that should be said, 1 to 12 words. Punctuation is ignored.",
+                    "example": "In februari is het Valentijnsdag."
+                  },
+                  "audio": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "wav, flac, ogg or mp3; any sample rate; at most 15 s and 4 MB."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Scored",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ScoreResult"
+                }
+              }
+            },
+            "headers": {
+              "X-RateLimit-Limit": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "The limit of the window closest to running out."
+              },
+              "X-RateLimit-Remaining": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "What is left in it after this call."
+              },
+              "X-RateLimit-Reset": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "When it frees up, Unix seconds."
+              },
+              "X-RateLimit-Window": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "hour, day, month, total or credits."
+              }
+            }
+          },
+          "400": {
+            "description": "Empty audio, or no samples",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Key wrong or revoked (with no key at all, the call is on the try it tier)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "402": {
+            "description": "Quota spent (quota_exhausted) or no plan on the account (no_plan)",
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds until a unit frees up, when one will."
+              }
+            },
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PaymentNeeded"
+                }
+              }
+            }
+          },
+          "403": {
+            "description": "The plan does not cover this endpoint (scope_missing)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Audio over 15 s or upload over 4 MB",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "415": {
+            "description": "Audio not readable",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Text missing or over 12 words, or nothing in the audio could be heard",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Too many calls in the last minute (rate_limited)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            },
+            "headers": {
+              "Retry-After": {
+                "schema": {
+                  "type": "integer"
+                },
+                "description": "Seconds to wait."
+              }
+            }
+          },
+          "500": {
+            "description": "Server fault",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        },
+        "security": [
+          {
+            "bearer": []
+          },
+          {
+            "apiKey": []
+          },
+          {}
+        ]
       }
     },
     "/health": {
       "get": {
         "operationId": "health",
-        "summary": "Check the key and see its limits",
+        "summary": "Check the key and see its plans",
         "responses": {
           "200": {
             "description": "The key works",
@@ -168,12 +417,19 @@
                     },
                     "limits": {
                       "type": "object",
+                      "description": "A key with limits of its own shows per_minute and per_day; a key on its account's plans shows tiers.",
                       "properties": {
                         "per_minute": {
                           "type": "integer"
                         },
                         "per_day": {
                           "type": "integer"
+                        },
+                        "tiers": {
+                          "type": "array",
+                          "items": {
+                            "type": "string"
+                          }
                         }
                       }
                     },
@@ -190,6 +446,9 @@
                           "type": "string"
                         }
                       }
+                    },
+                    "model": {
+                      "type": "string"
                     }
                   }
                 }
@@ -242,6 +501,114 @@
           }
         }
       }
+    },
+    "/usage": {
+      "get": {
+        "operationId": "usage",
+        "summary": "Each plan on the key's account and what is left",
+        "responses": {
+          "200": {
+            "description": "Usage",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Usage"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Key missing or wrong",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/feedback": {
+      "post": {
+        "operationId": "feedback",
+        "summary": "Tell us what you need: a feature, a bug, a way to pay",
+        "security": [
+          {},
+          {
+            "bearer": []
+          },
+          {
+            "apiKey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/Feedback"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/Feedback"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Kept",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "ok": {
+                      "type": "boolean"
+                    },
+                    "id": {
+                      "type": "integer"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "413": {
+            "description": "Message over 4,000 characters",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Unknown kind (bad_kind) or no message (empty_message)",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          },
+          "429": {
+            "description": "Over ten notes an hour from one address",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Error"
+                }
+              }
+            }
+          }
+        }
+      }
     }
   },
   "components": {
@@ -269,7 +636,9 @@
           "ipa_target",
           "ipa_heard",
           "worst_word",
-          "flags"
+          "flags",
+          "model",
+          "tier"
         ],
         "properties": {
           "text": {
@@ -328,6 +697,23 @@
               "type": "string"
             },
             "description": "Notes such as no_reference, wrong_word=N, unobservable_phones=N, missing_phones=N, reduced_phones=N, insertions=N, text_mismatch. New flags may appear within v1."
+          },
+          "model": {
+            "type": "string",
+            "description": "The scoring model; changes when scoring improves.",
+            "example": "nl-2026-10"
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "demo",
+              "api_free",
+              "api_trial",
+              "api_pro",
+              "credits",
+              "custom"
+            ],
+            "description": "The plan this score was charged to."
           }
         }
       },
@@ -399,12 +785,184 @@
       "Error": {
         "type": "object",
         "required": [
+          "error",
           "detail"
         ],
         "properties": {
+          "error": {
+            "type": "string",
+            "description": "A stable code to branch on.",
+            "enum": [
+              "bad_request",
+              "invalid_key",
+              "quota_exhausted",
+              "no_plan",
+              "scope_missing",
+              "not_found",
+              "too_large",
+              "unsupported_audio",
+              "not_scorable",
+              "rate_limited",
+              "bad_kind",
+              "empty_message",
+              "error"
+            ]
+          },
           "detail": {
             "type": "string",
             "description": "A message for the developer."
+          }
+        }
+      },
+      "PaymentNeeded": {
+        "allOf": [
+          {
+            "$ref": "#/components/schemas/Error"
+          },
+          {
+            "type": "object",
+            "properties": {
+              "resets_at": {
+                "type": [
+                  "string",
+                  "null"
+                ],
+                "format": "date-time",
+                "description": "When a unit frees up; null when only a purchase brings one back."
+              },
+              "upgrade_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "credits_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "keys_url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "payment_methods": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              },
+              "request_method_url": {
+                "type": "string",
+                "format": "uri",
+                "description": "POST a payment_method note here to ask for another way to pay."
+              }
+            }
+          }
+        ]
+      },
+      "Window": {
+        "type": "object",
+        "required": [
+          "limit",
+          "used",
+          "left",
+          "resets_at"
+        ],
+        "properties": {
+          "limit": {
+            "type": "integer"
+          },
+          "used": {
+            "type": "integer"
+          },
+          "left": {
+            "type": "integer"
+          },
+          "resets_at": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "format": "date-time"
+          }
+        }
+      },
+      "Usage": {
+        "type": "object",
+        "required": [
+          "key",
+          "plans",
+          "model"
+        ],
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "The first characters of the key asked with."
+          },
+          "model": {
+            "type": "string"
+          },
+          "plans": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "required": [
+                "tier",
+                "per_minute",
+                "windows"
+              ],
+              "properties": {
+                "tier": {
+                  "type": "string"
+                },
+                "per_minute": {
+                  "type": "integer"
+                },
+                "scopes": {
+                  "type": "array",
+                  "items": {
+                    "type": "string"
+                  }
+                },
+                "ends_at": {
+                  "type": [
+                    "string",
+                    "null"
+                  ],
+                  "format": "date-time"
+                },
+                "windows": {
+                  "type": "object",
+                  "description": "By name: hour (rolling 60 minutes), day and month (UTC), total, credits.",
+                  "additionalProperties": {
+                    "$ref": "#/components/schemas/Window"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "Feedback": {
+        "type": "object",
+        "required": [
+          "message"
+        ],
+        "properties": {
+          "kind": {
+            "type": "string",
+            "enum": [
+              "need",
+              "bug",
+              "payment_method",
+              "other"
+            ],
+            "default": "other"
+          },
+          "message": {
+            "type": "string",
+            "maxLength": 4000
+          },
+          "contact": {
+            "type": "string",
+            "maxLength": 200
           }
         }
       }

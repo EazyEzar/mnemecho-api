@@ -14,12 +14,12 @@ mnemecho.com. The scoring service itself is not open source.
 
 ## Quick start
 
-Keys are free during early access: write to hello@mnemecho.com with what you are
-building.
+Make a free key at https://account.mnemecho.com/keys (email or Google sign in, no
+card): 10 scores an hour, 100 a day. With no key you can try 3 scores an hour.
 
 ```sh
 export MNEMECHO_KEY=...
-curl -X POST https://api.mnemecho.com/api/v1/score \
+curl -X POST https://api.mnemecho.com/api/v1/score/text \
   -H "Authorization: Bearer $MNEMECHO_KEY" \
   -F "text=In februari is het Valentijnsdag." \
   -F "audio=@attempt.wav"

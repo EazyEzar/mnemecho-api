@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>API docs · mnemEcho</title>
-<meta name="description" content="mnemEcho Pronunciation API v1 reference: POST /score with Dutch text and audio, the response word by word and sound by sound, verdicts, flags, errors and limits.">
+<meta name="description" content="mnemEcho Pronunciation API v1 reference: POST /score/text with Dutch text and audio, the response word by word and sound by sound, verdicts, flags, keys, quota, errors and feedback.">
 <link rel="canonical" href="https://mnemecho.com/en/docs/">
 <link rel="alternate" hreflang="en" href="https://mnemecho.com/en/docs/"><link rel="alternate" hreflang="nl" href="https://mnemecho.com/nl/docs/"><link rel="alternate" hreflang="x-default" href="https://mnemecho.com/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -32,15 +32,18 @@
 <nav class="toc" aria-label="On this page">
   <ul>
     <li><a href="#start">Start</a></li>
-    <li><a href="#score">POST /score</a></li>
+    <li><a href="#keys">Keys and tiers</a></li>
+    <li><a href="#score">POST /score/text</a></li>
     <li><a href="#response">The response</a></li>
     <li><a href="#verdicts">Verdicts</a></li>
     <li><a href="#flags">Flags</a></li>
     <li><a href="#feedback">Showing feedback</a></li>
+    <li><a href="#usage">GET /usage</a></li>
     <li><a href="#health">GET /health</a></li>
     <li><a href="#status">GET /status</a></li>
     <li><a href="#errors">Errors</a></li>
     <li><a href="#limits">Limits</a></li>
+    <li><a href="#tell-us">POST /feedback</a></li>
     <li><a href="#tips">Good practice</a></li>
     <li><a href="#machine">For machines</a></li>
   </ul>
@@ -54,9 +57,11 @@
   <tr><th>Transport</th><td>HTTPS only</td></tr>
   <tr><th>Format</th><td>Requests as <code>multipart/form-data</code>, answers as JSON</td></tr>
 </table></div>
-<p>Keys are given by request during early access: <a href="mailto:hello@mnemecho.com?subject=mnemEcho%20API%20key">hello@mnemecho.com</a>.
+<p>Make a free key at <a href="https://account.mnemecho.com/keys">account.mnemecho.com/keys</a>:
+  sign in with your email or Google and press Make a key. It takes a minute and no card.
   Keep your key on your server, never in a web page or a shipped app: anyone holding it
-  can spend your quota. If it leaks, tell us and we rotate it; the old key stops at once.</p>
+  can spend your quota. If it leaks, revoke it on the same page and make another; the
+  old key stops at once.</p>
 
 <h3>What is graded</h3>
 <ul>
@@ -69,8 +74,24 @@
     voice is not marked down for how it sounds, only for which sounds it makes.</li>
 </ul>
 
-<h2 id="score">POST /score</h2>
-<p>Score one recording against one Dutch text.</p>
+<h2 id="keys">Keys and tiers</h2>
+<p>A key belongs to your account, and an account may hold up to five (a staging key,
+  one per app). Your keys share your account's quota. One unit of quota is one scored
+  recording.</p>
+<div class="table-wrap"><table>
+  <tr><th>Tier</th><th>Quota</th><th>Rate</th><th>Card</th></tr>
+  <tr><td>No key (try it)</td><td>3 scores an hour per address</td><td>3 a minute</td><td>No</td></tr>
+  <tr><td>Free</td><td>10 scores an hour, 100 a day</td><td>10 a minute</td><td>No</td></tr>
+  <tr><td>Trial, Pro, credits</td><td>Opening soon: see <a href="/en/pricing/">pricing</a></td><td>60 a minute</td><td>Yes</td></tr>
+</table></div>
+<p>Every scored response names the <code>tier</code> that paid for it, and the
+  <code>model</code> that scored it: when we improve scoring, the name changes, so a
+  shift in your scores can be told from a change in your users. When an account
+  holds more than one plan, paid room is spent first and the free tier last.</p>
+
+<h2 id="score">POST /score/text</h2>
+<p>Score one recording against one Dutch text. <code>POST /score</code> is the same call
+  under its first name and keeps working.</p>
 <div class="table-wrap"><table>
   <tr><th>Field</th><th>Type</th><th>Rules</th></tr>
   <tr><td><code>text</code></td><td>form field</td><td>The Dutch that should be said. 1 to 12 words. Punctuation is ignored.</td></tr>
@@ -78,7 +99,7 @@
 </table></div>
 
 <h3>curl</h3>
-<pre><code>curl -X POST https://api.mnemecho.com/api/v1/score \
+<pre><code>curl -X POST https://api.mnemecho.com/api/v1/score/text \
   -H "Authorization: Bearer $MNEMECHO_KEY" \
   -F "text=In februari is het Valentijnsdag." \
   -F "audio=@attempt.wav"</code></pre>
@@ -87,7 +108,7 @@
 <pre><code>import os, requests
 
 resp = requests.post(
-    "https://api.mnemecho.com/api/v1/score",
+    "https://api.mnemecho.com/api/v1/score/text",
     headers={"Authorization": f"Bearer {os.environ['MNEMECHO_KEY']}"},
     data={"text": "In februari is het Valentijnsdag."},
     files={"audio": open("attempt.wav", "rb")},
@@ -104,7 +125,7 @@ const form = new FormData();
 form.append("text", "In februari is het Valentijnsdag.");
 form.append("audio", new Blob([await readFile("attempt.wav")], { type: "audio/wav" }), "attempt.wav");
 
-const resp = await fetch("https://api.mnemecho.com/api/v1/score", {
+const resp = await fetch("https://api.mnemecho.com/api/v1/score/text", {
   method: "POST",
   headers: { Authorization: `Bearer ${process.env.MNEMECHO_KEY}` },
   body: form,
@@ -141,7 +162,9 @@ console.log(result.score, result.verdict, result.worst_word);</code></pre>
   "ipa_target": "ɪ n f eː b r y aː r i ɪ s h ə t v aː l ə n t ɛɪ n z d ɑ x",
   "ipa_heard":  "ɪ n f ɛ b r y aː r i ɪ s h ə t v aː l ə t ɛɪ n z d ɑ x",
   "worst_word": "februari",
-  "flags": ["unobservable_phones=1", "no_reference"]
+  "flags": ["unobservable_phones=1", "no_reference"],
+  "model": "nl-2026-10",
+  "tier": "api_free"
 }</code></pre>
 
 <div class="table-wrap"><table>
@@ -149,6 +172,8 @@ console.log(result.score, result.verdict, result.worst_word);</code></pre>
   <tr><td><code>text</code></td><td>The words that were scored, punctuation removed.</td></tr>
   <tr><td><code>score</code></td><td>0 to 100, one decimal. Set against native Dutch speakers, so 90 and up is native-like, not merely good.</td></tr>
   <tr><td><code>verdict</code></td><td><code>excellent</code>, <code>pass</code>, <code>marginal_fail</code> or <code>hard_fail</code>. See <a href="#verdicts">verdicts</a>.</td></tr>
+  <tr><td><code>model</code></td><td>The scoring model, for example <code>nl-2026-10</code>. It changes when scoring improves.</td></tr>
+  <tr><td><code>tier</code></td><td>The plan this score was charged to: <code>demo</code>, <code>api_free</code>, <code>api_trial</code>, <code>api_pro</code>, <code>credits</code>, or <code>custom</code>.</td></tr>
   <tr><td><code>graded_by</code></td><td>Which parts made the score. Always <code>["pronunciation"]</code> on this endpoint.</td></tr>
   <tr><td><code>reference</code></td><td>Always <code>false</code>: no native recording was compared.</td></tr>
   <tr><td><code>words</code></td><td>One entry per word, in order.</td></tr>
@@ -216,11 +241,22 @@ console.log(result.score, result.verdict, result.worst_word);</code></pre>
   <li>Show one or two sounds per try. People fix one thing at a time.</li>
 </ol>
 
+<h2 id="usage">GET /usage</h2>
+<p>What your account has left, plan by plan and window by window. Needs a key, costs nothing.</p>
+<pre><code>curl https://api.mnemecho.com/api/v1/usage -H "Authorization: Bearer $MNEMECHO_KEY"</code></pre>
+<pre><code>{"key": "mne_u8Hf", "model": "nl-2026-10",
+ "plans": [{"tier": "api_free", "per_minute": 10, "scopes": ["score:text"], "ends_at": null,
+            "windows": {
+              "hour": {"limit": 10, "used": 3, "left": 7, "resets_at": "2026-10-24T10:42:05+00:00"},
+              "day": {"limit": 100, "used": 12, "left": 88, "resets_at": "2026-10-25T00:00:00+00:00"}}}]}</code></pre>
+<p>The hour is a rolling 60 minutes: <code>resets_at</code> is when the oldest score in
+  it drops out. The day is the UTC day.</p>
+
 <h2 id="health">GET /health</h2>
-<p>Checks your key and shows your limits. Needs a key.</p>
+<p>Checks your key and shows what a request may hold. Needs a key.</p>
 <pre><code>curl https://api.mnemecho.com/api/v1/health -H "Authorization: Bearer $MNEMECHO_KEY"</code></pre>
-<pre><code>{"ok": true, "client": "your-name",
- "limits": {"per_minute": 20, "per_day": 500},
+<pre><code>{"ok": true, "client": "you@example.com: my app", "model": "nl-2026-10",
+ "limits": {"tiers": ["api_free"]},
  "request": {"max_words": 12, "max_audio_s": 15.0,
              "formats": "wav, flac, ogg or mp3"}}</code></pre>
 
@@ -231,25 +267,44 @@ console.log(result.score, result.verdict, result.worst_word);</code></pre>
 {"ok": true}</code></pre>
 
 <h2 id="errors">Errors</h2>
-<p>Every error is JSON with a <code>detail</code> message written for a developer, for example
-  <code>{"detail": "send the Dutch text as the form field 'text'"}</code>.</p>
+<p>Every error is JSON with a stable <code>error</code> code to branch on and a
+  <code>detail</code> message written for a developer, for example
+  <code>{"error": "not_scorable", "detail": "send the Dutch text as the form field 'text'"}</code>.</p>
 <div class="table-wrap"><table>
-  <tr><th>Status</th><th>When</th><th>What to do</th></tr>
-  <tr><td>400</td><td>Empty audio, or audio with no samples.</td><td>Check the recording step.</td></tr>
-  <tr><td>401</td><td>Key missing or wrong.</td><td>Check the <code>Authorization</code> header.</td></tr>
-  <tr><td>413</td><td>Audio over 15 seconds, or upload over 4 MB.</td><td>Trim silence; send one sentence per call.</td></tr>
-  <tr><td>415</td><td>Audio not readable.</td><td>Send wav, flac, ogg or mp3. Browser webm recordings must be converted first.</td></tr>
-  <tr><td>422</td><td>Text missing, over 12 words, or nothing in the audio could be heard.</td><td>For "could not be heard", ask for another try, louder. This is not a low score.</td></tr>
-  <tr><td>429</td><td>Over your per minute or per day limit.</td><td>Wait the seconds in the <code>Retry-After</code> header.</td></tr>
-  <tr><td>500</td><td>Our fault.</td><td>Retry once; if it repeats, tell us the time.</td></tr>
+  <tr><th>Status</th><th><code>error</code></th><th>When</th><th>What to do</th></tr>
+  <tr><td>400</td><td><code>bad_request</code></td><td>Empty audio, or audio with no samples.</td><td>Check the recording step.</td></tr>
+  <tr><td>401</td><td><code>invalid_key</code></td><td>Key wrong or revoked.</td><td>Check the <code>Authorization</code> header. With no key at all you are on the try it tier.</td></tr>
+  <tr><td>402</td><td><code>quota_exhausted</code></td><td>Every plan on your account is spent.</td><td>Wait until <code>resets_at</code> (also <code>Retry-After</code>), or follow <code>upgrade_url</code>.</td></tr>
+  <tr><td>402</td><td><code>no_plan</code></td><td>The key's account holds no plan.</td><td>Make a free key at <code>keys_url</code>.</td></tr>
+  <tr><td>403</td><td><code>scope_missing</code></td><td>Your plan does not cover this endpoint.</td><td>See <a href="/en/pricing/">pricing</a>.</td></tr>
+  <tr><td>413</td><td><code>too_large</code></td><td>Audio over 15 seconds, or upload over 4 MB.</td><td>Trim silence; send one sentence per call.</td></tr>
+  <tr><td>415</td><td><code>unsupported_audio</code></td><td>Audio not readable.</td><td>Send wav, flac, ogg or mp3. Browser webm recordings must be converted first.</td></tr>
+  <tr><td>422</td><td><code>not_scorable</code></td><td>Text missing, over 12 words, or nothing in the audio could be heard.</td><td>For "could not be heard", ask for another try, louder. This is not a low score.</td></tr>
+  <tr><td>429</td><td><code>rate_limited</code></td><td>Too many calls in the last minute.</td><td>Wait the seconds in the <code>Retry-After</code> header.</td></tr>
+  <tr><td>500</td><td></td><td>Our fault.</td><td>Retry once; if it repeats, tell us the time.</td></tr>
 </table></div>
 
 <h2 id="limits">Limits</h2>
 <ul>
-  <li>Each key has a per minute and a per day limit; <code>GET /health</code> shows yours. The day resets at 00:00 UTC.</li>
-  <li>Failed requests (400, 413, 415, 422) count toward the limits; 429 answers do not.</li>
+  <li>Quota counts scored recordings only. A request that fails (400, 413, 415, 422) costs no quota but counts toward the per minute rate; refused requests (402, 403, 429) count for nothing.</li>
+  <li>Every scored response carries <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code> (Unix seconds) and <code>X-RateLimit-Window</code> for the window closest to running out.</li>
+  <li>A spent quota answers 402 with when it frees up and where to get more:
+<pre><code>{"error": "quota_exhausted", "detail": "...", "resets_at": "2026-10-24T10:42:05+00:00",
+ "upgrade_url": "...", "credits_url": "...", "keys_url": "...",
+ "payment_methods": ["card via checkout"], "request_method_url": "https://api.mnemecho.com/api/v1/feedback"}</code></pre></li>
+  <li>Keys made before self-serve keys keep the limits they were given; <code>GET /usage</code> shows them as <code>custom</code>.</li>
   <li>Our network also blocks bursts of more than 10 requests in 10 seconds.</li>
 </ul>
+
+<h2 id="tell-us">POST /feedback</h2>
+<p>Tell us what you need: a feature, a bug, or a way to pay we do not offer yet. No key
+  needed (send yours and we know who you are). Agents are welcome to use it.</p>
+<pre><code>curl -X POST https://api.mnemecho.com/api/v1/feedback -H "Content-Type: application/json" \
+  -d '{"kind": "payment_method", "message": "We pay per call from an agent wallet.", "contact": "dev@example.com"}'
+{"ok": true, "id": 12}</code></pre>
+<p><code>kind</code> is <code>need</code>, <code>bug</code>, <code>payment_method</code> or
+  <code>other</code>; <code>message</code> is up to 4,000 characters; <code>contact</code>
+  is optional. Ten notes an hour per address.</p>
 
 <h2 id="tips">Good practice</h2>
 <ul>

@@ -15,7 +15,7 @@ const form = new FormData();
 form.append("text", text);
 form.append("audio", new Blob([await readFile(audioPath)]), basename(audioPath));
 
-const resp = await fetch(`${API}/score`, {
+const resp = await fetch(`${API}/score/text`, {
   method: "POST",
   headers: { Authorization: `Bearer ${process.env.MNEMECHO_KEY}` },
   body: form,
