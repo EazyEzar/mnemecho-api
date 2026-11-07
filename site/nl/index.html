@@ -40,8 +40,9 @@
 
   <div class="listen" aria-label="Drie zinnen uit de app">
     <figure class="say" data-say>
+      <span class="say-line" aria-hidden="true"></span>
       <button class="play" type="button" aria-pressed="false" data-src="/assets/audio/card-22970.mp3"
-        aria-label="Speel de moedertaalspreker af: Ze hebben een gezellig tuintje."><span class="play-icon" aria-hidden="true"></span></button>
+        aria-label="Speel de moedertaalspreker af: Ze hebben een gezellig tuintje."><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg><svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/></svg></button>
       <div>
         <p class="nl">Ze hebben een gezellig t<mark>ui</mark>ntje.</p>
         <p class="en" lang="en">They have a cozy garden.</p>
@@ -49,8 +50,9 @@
       </div>
     </figure>
     <figure class="say" data-say>
+      <span class="say-line" aria-hidden="true"></span>
       <button class="play" type="button" aria-pressed="false" data-src="/assets/audio/card-21414.mp3"
-        aria-label="Speel de moedertaalspreker af: Gelukkig heb ik een paraplu bij me!"><span class="play-icon" aria-hidden="true"></span></button>
+        aria-label="Speel de moedertaalspreker af: Gelukkig heb ik een paraplu bij me!"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg><svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/></svg></button>
       <div>
         <p class="nl"><mark>G</mark>elukki<mark>g</mark> heb ik een paraplu bij me!</p>
         <p class="en" lang="en">Luckily I have an umbrella with me!</p>
@@ -58,8 +60,9 @@
       </div>
     </figure>
     <figure class="say" data-say>
+      <span class="say-line" aria-hidden="true"></span>
       <button class="play" type="button" aria-pressed="false" data-src="/assets/audio/card-15755.mp3"
-        aria-label="Speel de moedertaalspreker af: Mijn mama maakt altijd heerlijke tiramisu."><span class="play-icon" aria-hidden="true"></span></button>
+        aria-label="Speel de moedertaalspreker af: Mijn mama maakt altijd heerlijke tiramisu."><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg><svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/></svg></button>
       <div>
         <p class="nl">M<mark>ij</mark>n mama maakt alt<mark>ij</mark>d heerl<mark>ij</mark>ke tiramisu.</p>
         <p class="en" lang="en">My mom always makes delicious tiramisu.</p>
@@ -71,7 +74,7 @@
 </section>
 
 <h2>Zo werkt het</h2>
-<ol class="steps">
+<ol class="route">
   <li><h3>Vind je klanken</h3><p>Tien korte zinnen. Je ziet welke Nederlandse klanken
     aandacht vragen en waar je begint.</p></li>
   <li><h3>Nazeggen, dan onthouden</h3><p>De eerste keren doe je een moedertaalspreker na.
@@ -82,23 +85,28 @@
 </ol>
 
 <h2 id="price">De prijs</h2>
-<div class="grid two plans">
-  <div class="card">
+<div class="price-panel">
+  <div class="trial">
+    <p class="trial-lead">Begin met 7 dagen gratis, zonder creditcard.</p>
+    <p>Daarna blijven 10 kaarten
+  per dag gratis, voor altijd. Paddle, onze <span lang="en">merchant of record</span>,
+  regelt de betaling en toont de eindprijs met btw voordat je betaalt. Zie de
+  <a href="/nl/terms/">voorwaarden</a> en <a href="/nl/refunds/">terugbetaling</a>.</p>
+    <a class="button primary" href="https://app.mnemecho.com/">Begin gratis</a>
+  </div>
+  <div class="plans">
+  <div class="plan">
     <h3>Per maand</h3>
     <p class="price">€7,99 <span class="per">per maand</span></p>
     <p>Elke zin, elk niveau, de klankgym en de patroonpakketten. Stoppen kan altijd.</p>
   </div>
-  <div class="card">
+  <div class="plan">
     <h3>Per jaar</h3>
     <p class="price">€59,99 <span class="per">per jaar</span></p>
     <p>Hetzelfde, voor €5 per maand.</p>
   </div>
 </div>
-<p><strong>Begin met 7 dagen gratis, zonder creditcard.</strong> Daarna blijven 10 kaarten
-  per dag gratis, voor altijd. Paddle, onze <span lang="en">merchant of record</span>,
-  regelt de betaling en toont de eindprijs met btw voordat je betaalt. Zie de
-  <a href="/nl/terms/">voorwaarden</a> en <a href="/nl/refunds/">terugbetaling</a>.</p>
-<div class="cta"><a class="button primary" href="https://app.mnemecho.com/">Begin gratis</a></div>
+</div>
 
 <h2>Wat het niet is</h2>
 <p>mnemEcho traint je spreken en je geheugen voor echte zinnen. Het vervangt geen docent,

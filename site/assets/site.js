@@ -14,7 +14,9 @@
   function stop() {
     if (!playing) return;
     playing.setAttribute("aria-pressed", "false");
-    playing.closest("[data-say]").classList.remove("playing");
+    var card = playing.closest("[data-say]");
+    card.classList.remove("playing");
+    card.style.setProperty("--heard", "0");
     playing = null;
   }
   document.querySelectorAll("[data-say] .play").forEach(function (button) {
@@ -24,6 +26,11 @@
       stop();
       if (again) return;
       player = new Audio(button.getAttribute("data-src"));
+      var card = button.closest("[data-say]");
+      card.style.setProperty("--heard", "0");
+      player.addEventListener("timeupdate", function () {
+        if (this.duration) card.style.setProperty("--heard", String(this.currentTime / this.duration));
+      });
       player.addEventListener("ended", stop);
       player.addEventListener("error", stop);
       playing = button;

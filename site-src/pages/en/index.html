@@ -17,8 +17,9 @@ description: mnemEcho trains you to say real Dutch sentences from memory, with a
 
   <div class="listen" aria-label="Three sentences from the app">
     <figure class="say" data-say>
+      <span class="say-line" aria-hidden="true"></span>
       <button class="play" type="button" aria-pressed="false" data-src="/assets/audio/card-22970.mp3"
-        aria-label="Play the native speaker: They have a cozy garden."><span class="play-icon" aria-hidden="true"></span></button>
+        aria-label="Play the native speaker: They have a cozy garden."><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg><svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/></svg></button>
       <div>
         <p class="nl" lang="nl">Ze hebben een gezellig t<mark>ui</mark>ntje.</p>
         <p class="en">They have a cozy garden.</p>
@@ -26,8 +27,9 @@ description: mnemEcho trains you to say real Dutch sentences from memory, with a
       </div>
     </figure>
     <figure class="say" data-say>
+      <span class="say-line" aria-hidden="true"></span>
       <button class="play" type="button" aria-pressed="false" data-src="/assets/audio/card-21414.mp3"
-        aria-label="Play the native speaker: Luckily I have an umbrella with me!"><span class="play-icon" aria-hidden="true"></span></button>
+        aria-label="Play the native speaker: Luckily I have an umbrella with me!"><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg><svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/></svg></button>
       <div>
         <p class="nl" lang="nl"><mark>G</mark>elukki<mark>g</mark> heb ik een paraplu bij me!</p>
         <p class="en">Luckily I have an umbrella with me!</p>
@@ -35,8 +37,9 @@ description: mnemEcho trains you to say real Dutch sentences from memory, with a
       </div>
     </figure>
     <figure class="say" data-say>
+      <span class="say-line" aria-hidden="true"></span>
       <button class="play" type="button" aria-pressed="false" data-src="/assets/audio/card-15755.mp3"
-        aria-label="Play the native speaker: My mom always makes delicious tiramisu."><span class="play-icon" aria-hidden="true"></span></button>
+        aria-label="Play the native speaker: My mom always makes delicious tiramisu."><svg class="i-play" viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5.5v13a1 1 0 0 0 1.5.86l10.5-6.5a1 1 0 0 0 0-1.72L9.5 4.64A1 1 0 0 0 8 5.5z"/></svg><svg class="i-stop" viewBox="0 0 24 24" aria-hidden="true"><rect x="6.5" y="6.5" width="11" height="11" rx="2"/></svg></button>
       <div>
         <p class="nl" lang="nl">M<mark>ij</mark>n mama maakt alt<mark>ij</mark>d heerl<mark>ij</mark>ke tiramisu.</p>
         <p class="en">My mom always makes delicious tiramisu.</p>
@@ -48,7 +51,7 @@ description: mnemEcho trains you to say real Dutch sentences from memory, with a
 </section>
 
 <h2>How it works</h2>
-<ol class="steps">
+<ol class="route">
   <li><h3>Find your sounds</h3><p>Ten short sentences. You learn which
     Dutch sounds to work on and where to start.</p></li>
   <li><h3>Echo, then recall</h3><p>Copy a native speaker for a sentence's first tries. After
@@ -59,23 +62,28 @@ description: mnemEcho trains you to say real Dutch sentences from memory, with a
 </ol>
 
 <h2 id="price">The price</h2>
-<div class="grid two plans">
-  <div class="card">
+<div class="price-panel">
+  <div class="trial">
+    <p class="trial-lead">Start with 7 days free, no card.</p>
+    <p>After that, 10 cards a day stay free
+  for good. Paddle, our merchant of record, takes the payment and shows the final price
+  with VAT before you pay. See the <a href="/en/terms/">terms</a> and
+  <a href="/en/refunds/">refunds</a>.</p>
+    <a class="button primary" href="{{app_url}}">Start free</a>
+  </div>
+  <div class="plans">
+  <div class="plan">
     <h3>Monthly</h3>
     <p class="price">€7.99 <span class="per">a month</span></p>
     <p>Every sentence, every level, the Sound gym and the pattern packs. Stop any time.</p>
   </div>
-  <div class="card">
+  <div class="plan">
     <h3>Yearly</h3>
     <p class="price">€59.99 <span class="per">a year</span></p>
     <p>The same, for €5 a month.</p>
   </div>
 </div>
-<p><strong>Start with 7 days free, no card.</strong> After that, 10 cards a day stay free
-  for good. Paddle, our merchant of record, takes the payment and shows the final price
-  with VAT before you pay. See the <a href="/en/terms/">terms</a> and
-  <a href="/en/refunds/">refunds</a>.</p>
-<div class="cta"><a class="button primary" href="{{app_url}}">Start free</a></div>
+</div>
 
 <h2>What it is not</h2>
 <p>mnemEcho trains your speaking and your memory for real sentences. It does not replace a
