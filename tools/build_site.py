@@ -24,7 +24,7 @@ LANGS = ("en", "nl")
 
 CHROME = {
     "en": {
-        "nav": [("", "Home"), ("pricing", "Pricing"), ("docs", "API docs"), ("status", "Status")],
+        "nav": [("", "Learn Dutch"), ("api", "For developers"), ("docs", "API docs"), ("pricing", "API pricing"), ("status", "Status")],
         "switch": "Nederlands",
         "legal": [("terms", "Terms"), ("privacy", "Privacy"), ("refunds", "Refunds"), ("credits", "Credits")],
         "company": "mnemEcho is a product of",
@@ -32,7 +32,7 @@ CHROME = {
         "skip": "Skip to content",
     },
     "nl": {
-        "nav": [("", "Home"), ("pricing", "Prijzen"), ("docs", "API-docs"), ("status", "Status")],
+        "nav": [("", "Nederlands leren"), ("api", "Voor ontwikkelaars"), ("docs", "API-docs"), ("pricing", "API-prijzen"), ("status", "Status")],
         "switch": "English",
         "legal": [("terms", "Voorwaarden"), ("privacy", "Privacy"), ("refunds", "Terugbetaling"), ("credits", "Credits")],
         "company": "mnemEcho is een product van",
@@ -120,7 +120,7 @@ ROOT_INDEX = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mnemEcho</title>
-<meta name="description" content="mnemEcho: speak Dutch from memory, with feedback on every sound. A pronunciation API for Dutch.">
+<meta name="description" content="mnemEcho: say real Dutch sentences from memory, with feedback on every sound. Also a pronunciation API for Dutch.">
 <link rel="alternate" hreflang="en" href="{base}/en/">
 <link rel="alternate" hreflang="nl" href="{base}/nl/">
 <link rel="alternate" hreflang="x-default" href="{base}/">
@@ -162,7 +162,7 @@ HEADERS = """/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.mnemecho.com; frame-ancestors 'none'; base-uri 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; font-src 'self'; media-src 'self'; connect-src 'self' https://api.mnemecho.com; frame-ancestors 'none'; base-uri 'self'
 /assets/*
   Cache-Control: public, max-age=86400
 /openapi.json
