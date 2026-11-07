@@ -28,6 +28,7 @@ CHROME = {
         "switch": "Nederlands",
         "legal": [("terms", "Terms"), ("privacy", "Privacy"), ("refunds", "Refunds"), ("credits", "Credits")],
         "company": "mnemEcho is a product of",
+        "vat": "VAT",
         "draft": "Draft: these terms are not in force yet. They take effect when paid plans open.",
         "skip": "Skip to content",
     },
@@ -36,6 +37,7 @@ CHROME = {
         "switch": "English",
         "legal": [("terms", "Voorwaarden"), ("privacy", "Privacy"), ("refunds", "Terugbetaling"), ("credits", "Credits")],
         "company": "mnemEcho is een product van",
+        "vat": "btw",
         "draft": "Concept: deze voorwaarden gelden nog niet. Ze gaan in wanneer de betaalde abonnementen openen.",
         "skip": "Naar de inhoud",
     },
@@ -106,7 +108,7 @@ def render(lang: str, name: str, meta: dict, body: str, site: dict) -> str:
 {draft}{fill(body, site)}
 </main>
 <footer class="foot">
-  <p>{c["company"]} {html.escape(site["company"])} · KvK {site["kvk"]} · {html.escape(site["address"])}</p>
+  <p>{c["company"]} {html.escape(site["company"])} · KvK {site["kvk"]} · {c["vat"]} {site["vat"]} · {html.escape(site["address"])}</p>
   <p><a href="mailto:{site["contact"]}">{site["contact"]}</a> · {legal}</p>
 </footer>
 </body>
