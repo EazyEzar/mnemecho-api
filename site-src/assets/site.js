@@ -1,42 +1,10 @@
-// mnemecho.com: remember the language a visitor picks, play the native sentences,
-// and run the status check.
+// mnemecho.com: remember the language a visitor picks, and run the status check.
 (function () {
   "use strict";
 
   document.querySelectorAll("a[data-lang]").forEach(function (link) {
     link.addEventListener("click", function () {
       try { localStorage.setItem("lang", link.getAttribute("data-lang")); } catch (e) {}
-    });
-  });
-
-  // Phase 78c: the native sentences on the learner home. One plays at a time.
-  var player = null, playing = null;
-  function stop() {
-    if (!playing) return;
-    playing.setAttribute("aria-pressed", "false");
-    var card = playing.closest("[data-say]");
-    card.classList.remove("playing");
-    card.style.setProperty("--heard", "0");
-    playing = null;
-  }
-  document.querySelectorAll("[data-say] .play").forEach(function (button) {
-    button.addEventListener("click", function () {
-      var again = playing === button;
-      if (player) { player.pause(); }
-      stop();
-      if (again) return;
-      player = new Audio(button.getAttribute("data-src"));
-      var card = button.closest("[data-say]");
-      card.style.setProperty("--heard", "0");
-      player.addEventListener("timeupdate", function () {
-        if (this.duration) card.style.setProperty("--heard", String(this.currentTime / this.duration));
-      });
-      player.addEventListener("ended", stop);
-      player.addEventListener("error", stop);
-      playing = button;
-      button.setAttribute("aria-pressed", "true");
-      button.closest("[data-say]").classList.add("playing");
-      player.play().catch(stop);
     });
   });
 
