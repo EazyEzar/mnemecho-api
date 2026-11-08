@@ -24,18 +24,20 @@ LANGS = ("en", "nl")
 
 CHROME = {
     "en": {
-        "nav": [("", "Home"), ("pricing", "Pricing"), ("docs", "API docs"), ("status", "Status")],
+        "nav": [("", "Learn Dutch"), ("api", "For developers"), ("docs", "API docs"), ("pricing", "API pricing"), ("status", "Status")],
         "switch": "Nederlands",
         "legal": [("terms", "Terms"), ("privacy", "Privacy"), ("refunds", "Refunds"), ("credits", "Credits")],
         "company": "mnemEcho is a product of",
+        "vat": "VAT",
         "draft": "Draft: these terms are not in force yet. They take effect when paid plans open.",
         "skip": "Skip to content",
     },
     "nl": {
-        "nav": [("", "Home"), ("pricing", "Prijzen"), ("docs", "API-docs"), ("status", "Status")],
+        "nav": [("", "Nederlands leren"), ("api", "Voor ontwikkelaars"), ("docs", "API-docs"), ("pricing", "API-prijzen"), ("status", "Status")],
         "switch": "English",
         "legal": [("terms", "Voorwaarden"), ("privacy", "Privacy"), ("refunds", "Terugbetaling"), ("credits", "Credits")],
         "company": "mnemEcho is een product van",
+        "vat": "btw",
         "draft": "Concept: deze voorwaarden gelden nog niet. Ze gaan in wanneer de betaalde abonnementen openen.",
         "skip": "Naar de inhoud",
     },
@@ -106,7 +108,7 @@ def render(lang: str, name: str, meta: dict, body: str, site: dict) -> str:
 {draft}{fill(body, site)}
 </main>
 <footer class="foot">
-  <p>{c["company"]} {html.escape(site["company"])} · KvK {site["kvk"]} · {html.escape(site["address"])}</p>
+  <p>{c["company"]} {html.escape(site["company"])} · KvK {site["kvk"]} · {c["vat"]} {site["vat"]} · {html.escape(site["address"])}</p>
   <p><a href="mailto:{site["contact"]}">{site["contact"]}</a> · {legal}</p>
 </footer>
 </body>
@@ -120,7 +122,7 @@ ROOT_INDEX = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mnemEcho</title>
-<meta name="description" content="mnemEcho: speak Dutch from memory, with feedback on every sound. A pronunciation API for Dutch.">
+<meta name="description" content="mnemEcho: say real Dutch sentences from memory, with feedback on every sound. Also a pronunciation API for Dutch.">
 <link rel="alternate" hreflang="en" href="{base}/en/">
 <link rel="alternate" hreflang="nl" href="{base}/nl/">
 <link rel="alternate" hreflang="x-default" href="{base}/">

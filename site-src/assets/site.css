@@ -63,7 +63,7 @@ img { max-width: 100%; height: auto; }
 }
 
 main { max-width: var(--measure); margin: 0 auto; padding: 8px 16px 48px; }
-.page-docs main, .page-pricing main, .page-home main { max-width: var(--wide); }
+.page-docs main, .page-pricing main, .page-home main, .page-api main { max-width: var(--wide); }
 h1, h2, h3 { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; line-height: 1.15; color: var(--brand-ink); }
 h1 { font-size: clamp(2rem, 6vw, 3rem); margin: 24px 0 12px; letter-spacing: -0.01em; }
 h2 { font-size: 1.5rem; margin: 40px 0 8px; }
@@ -131,3 +131,64 @@ th { font-weight: 700; }
 .foot a { color: var(--muted); }
 
 .chooser { text-align: center; padding-top: 18vh; }
+
+/* Learner home (phase 78c). */
+.learn-hero { text-align: center; padding: 40px 0 16px; display: grid; justify-items: center; }
+.learn-hero h1 { max-width: 14ch; text-wrap: balance; margin: 12px auto; }
+.learn-hero .lead { max-width: 36rem; margin-left: auto; margin-right: auto; text-wrap: pretty; }
+.learn-hero .cta { margin: 28px 0 10px; justify-content: center; }
+@media (min-width: 900px) { .learn-hero { padding: 72px 0 32px; } .learn-hero h1 { font-size: 4.5rem; } }
+
+.route { list-style: none; padding: 0; margin: 20px 0 8px; display: grid; gap: 0; counter-reset: stop; }
+.route li { position: relative; counter-increment: stop; padding: 0 0 28px 52px; }
+.route li::before {
+  content: counter(stop); position: absolute; left: 0; top: 0; width: 34px; height: 34px; border-radius: 50%;
+  display: grid; place-items: center; background: var(--surface); border: 2px solid var(--brand);
+  color: var(--brand); font: 700 1rem/1 "Bricolage Grotesque", system-ui, sans-serif; z-index: 1;
+}
+.route li::after { content: ""; position: absolute; left: 16px; top: 34px; bottom: 0; width: 2px; background: var(--line); }
+.route li:last-child { padding-bottom: 0; }
+.route li:last-child::after { display: none; }
+.route h3 { margin: 4px 0 6px; }
+.route p { margin: 0; color: var(--muted); max-width: 34ch; }
+@media (min-width: 760px) {
+  .route { grid-template-columns: repeat(3, 1fr); gap: 32px; }
+  .route li { padding: 52px 0 0; }
+  .route li::before { left: 0; top: 0; }
+  .route li::after { left: 34px; right: -32px; top: 16px; bottom: auto; width: auto; height: 2px; }
+}
+
+.price-panel {
+  display: grid; gap: 0; margin: 16px 0; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 18px; overflow: hidden; box-shadow: 0 1px 2px rgb(12 22 36 / 0.04), 0 10px 30px -16px rgb(12 22 36 / 0.16);
+}
+@media (min-width: 900px) { .price-panel { grid-template-columns: 1fr 1.2fr; } }
+.trial { padding: 28px; display: grid; gap: 12px; align-content: start; justify-items: start; background: var(--code-bg); }
+.trial p { margin: 0; }
+.trial-lead { font-family: "Bricolage Grotesque", system-ui, sans-serif; font-weight: 700; font-size: 1.45rem; line-height: 1.2; color: var(--brand-ink); text-wrap: balance; }
+.trial .button { margin-top: 8px; }
+.plans { display: grid; }
+@media (min-width: 560px) { .plans { grid-template-columns: 1fr 1fr; } }
+.plan { padding: 28px; border-top: 1px solid var(--line); }
+@media (min-width: 560px) { .plan + .plan { border-left: 1px solid var(--line); } }
+@media (min-width: 900px) { .plan { border-top: 0; } .plans { border-left: 1px solid var(--line); } }
+.plan h3 { margin: 0; font-size: 1rem; color: var(--muted); }
+.plan .price { margin: 6px 0 10px; font-size: 2.25rem; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
+.plan p:last-child { margin: 0; }
+.per { font-size: 1rem; font-weight: 600; color: var(--muted); letter-spacing: 0; }
+
+.button { transition: filter 160ms ease-out, transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms ease-out; }
+.button.primary:hover { filter: brightness(1.1); }
+.button.secondary:hover { background: color-mix(in srgb, var(--brand) 8%, transparent); }
+.button:active { transform: translateY(1px); }
+::selection { background: color-mix(in srgb, var(--brand) 28%, transparent); }
+html { accent-color: var(--brand); caret-color: var(--brand); scrollbar-color: var(--line) var(--bg); }
+@media (max-width: 639px) {
+  .nav { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; gap: 18px; margin: 0 -16px; padding: 0 32px 0 16px;
+    -webkit-mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); mask-image: linear-gradient(to right, #000 calc(100% - 40px), transparent); }
+  .nav::-webkit-scrollbar { display: none; }
+  .nav a { white-space: nowrap; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .button { transition: none; }
+}

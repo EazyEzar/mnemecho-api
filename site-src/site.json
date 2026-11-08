@@ -7,6 +7,18 @@
   "kvk": "97741876",
   "address": "Mechelenstraat 66, 4826 KN Breda",
   "legal_draft": false,
-  "updated": "2026-10-24",
-  "pages": ["", "pricing", "docs", "status", "credits", "terms", "privacy", "refunds"]
+  "updated": "2026-11-07",
+  "pages": [
+    "",
+    "api",
+    "pricing",
+    "docs",
+    "status",
+    "credits",
+    "terms",
+    "privacy",
+    "refunds"
+  ],
+  "app_url": "https://app.mnemecho.com/",
+  "vat": "NL868210985B01"
 }
