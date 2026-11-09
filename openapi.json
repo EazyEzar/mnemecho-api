@@ -3,8 +3,8 @@
   "info": {
     "title": "mnemEcho Pronunciation API",
     "version": "1.1.0",
-    "summary": "Score Dutch speech against its text, word by word and sound by sound.",
-    "description": "Send Dutch text and a recording; get practice feedback on that recording: a 0 to 100 pronunciation score, a feedback band, and every word and sound marked. Audio is scored in memory and never stored. Docs: https://mnemecho.com/en/docs/",
+    "summary": "Pronunciation feedback on Dutch speech against its text, word by word and sound by sound.",
+    "description": "Send Dutch text and a recording; get practice feedback on that recording: a 0 to 100 pronunciation match, a feedback band, and every word and sound marked. Audio is checked in memory and never stored. Docs: https://mnemecho.com/en/docs/",
     "contact": {
       "name": "mnemEcho",
       "email": "hello@mnemecho.com",
@@ -26,10 +26,10 @@
     }
   ],
   "paths": {
-    "/score/text": {
+    "/attempt/text": {
       "post": {
-        "operationId": "scoreText",
-        "summary": "Score one recording against one Dutch text",
+        "operationId": "attemptText",
+        "summary": "Get feedback on one recording against one Dutch text",
         "requestBody": {
           "required": true,
           "content": {
@@ -58,11 +58,11 @@
         },
         "responses": {
           "200": {
-            "description": "Scored",
+            "description": "Checked",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ScoreResult"
+                  "$ref": "#/components/schemas/AttemptResult"
                 }
               }
             },
@@ -209,192 +209,7 @@
           },
           {}
         ],
-        "description": "With no key, the call is on the try it tier: 3 scores an hour per address."
-      }
-    },
-    "/score": {
-      "post": {
-        "operationId": "score",
-        "summary": "Score one recording (first name of POST /score/text, kept)",
-        "requestBody": {
-          "required": true,
-          "content": {
-            "multipart/form-data": {
-              "schema": {
-                "type": "object",
-                "required": [
-                  "text",
-                  "audio"
-                ],
-                "properties": {
-                  "text": {
-                    "type": "string",
-                    "description": "The Dutch that should be said, 1 to 12 words. Punctuation is ignored.",
-                    "example": "In februari is het Valentijnsdag."
-                  },
-                  "audio": {
-                    "type": "string",
-                    "format": "binary",
-                    "description": "wav, flac, ogg or mp3; any sample rate; at most 15 s and 4 MB."
-                  }
-                }
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Scored",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/ScoreResult"
-                }
-              }
-            },
-            "headers": {
-              "X-RateLimit-Limit": {
-                "schema": {
-                  "type": "integer"
-                },
-                "description": "The limit of the window closest to running out."
-              },
-              "X-RateLimit-Remaining": {
-                "schema": {
-                  "type": "integer"
-                },
-                "description": "What is left in it after this call."
-              },
-              "X-RateLimit-Reset": {
-                "schema": {
-                  "type": "integer"
-                },
-                "description": "When it frees up, Unix seconds."
-              },
-              "X-RateLimit-Window": {
-                "schema": {
-                  "type": "string"
-                },
-                "description": "hour, day, month, total or credits."
-              }
-            }
-          },
-          "400": {
-            "description": "Empty audio, or no samples",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "401": {
-            "description": "Key wrong or revoked (with no key at all, the call is on the try it tier)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "402": {
-            "description": "Quota spent (quota_exhausted) or no plan on the account (no_plan)",
-            "headers": {
-              "Retry-After": {
-                "schema": {
-                  "type": "integer"
-                },
-                "description": "Seconds until a unit frees up, when one will."
-              }
-            },
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/PaymentNeeded"
-                }
-              }
-            }
-          },
-          "403": {
-            "description": "The plan does not cover this endpoint (scope_missing), or the free or no key tier was sent a sentence outside fixed_texts (fixed_texts_only)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "413": {
-            "description": "Audio over 15 s or upload over 4 MB",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "415": {
-            "description": "Audio not readable",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Text missing or over 12 words, or nothing in the audio could be heard",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "429": {
-            "description": "Too many calls in the last minute (rate_limited)",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            },
-            "headers": {
-              "Retry-After": {
-                "schema": {
-                  "type": "integer"
-                },
-                "description": "Seconds to wait."
-              }
-            }
-          },
-          "500": {
-            "description": "Server fault",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        },
-        "security": [
-          {
-            "bearer": []
-          },
-          {
-            "apiKey": []
-          },
-          {}
-        ]
+        "description": "With no key, the call is on the try it tier: 3 recordings an hour per address."
       }
     },
     "/health": {
@@ -624,99 +439,6 @@
       }
     },
     "schemas": {
-      "ScoreResult": {
-        "type": "object",
-        "required": [
-          "text",
-          "score",
-          "band",
-          "graded_by",
-          "reference",
-          "words",
-          "ipa_target",
-          "ipa_heard",
-          "worst_word",
-          "flags",
-          "model",
-          "tier"
-        ],
-        "properties": {
-          "text": {
-            "type": "string",
-            "description": "The words scored, punctuation removed."
-          },
-          "score": {
-            "type": "number",
-            "minimum": 0,
-            "maximum": 100,
-            "description": "0 to 100, one decimal, set against native Dutch speakers."
-          },
-          "band": {
-            "type": "string",
-            "enum": [
-              "native_like",
-              "clear",
-              "try_again",
-              "far"
-            ],
-            "description": "Feedback band for this one recording, to pick the app's next step (move on, or try again). Practice feedback, not an assessment of the speaker. native_like 95 and up, clear 75 to 94.9, try_again 55 to 74.9, far under 55."
-          },
-          "graded_by": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Parts that made the score; [\"pronunciation\"] on this endpoint."
-          },
-          "reference": {
-            "type": "boolean",
-            "description": "Always false here: no native recording was compared."
-          },
-          "words": {
-            "type": "array",
-            "items": {
-              "$ref": "#/components/schemas/Word"
-            }
-          },
-          "ipa_target": {
-            "type": "string"
-          },
-          "ipa_heard": {
-            "type": "string"
-          },
-          "worst_word": {
-            "type": [
-              "string",
-              "null"
-            ],
-            "description": "The word to work on first."
-          },
-          "flags": {
-            "type": "array",
-            "items": {
-              "type": "string"
-            },
-            "description": "Notes such as no_reference, wrong_word=N, unobservable_phones=N, missing_phones=N, reduced_phones=N, insertions=N, text_mismatch. New flags may appear within v1."
-          },
-          "model": {
-            "type": "string",
-            "description": "The scoring model; changes when scoring improves.",
-            "example": "nl-2026-10"
-          },
-          "tier": {
-            "type": "string",
-            "enum": [
-              "demo",
-              "api_free",
-              "api_trial",
-              "api_pro",
-              "credits",
-              "custom"
-            ],
-            "description": "The plan this score was charged to."
-          }
-        }
-      },
       "Word": {
         "type": "object",
         "required": [
@@ -731,7 +453,7 @@
           },
           "ok": {
             "type": "boolean",
-            "description": "False if any sound counted against the score, or the word was heard as another word."
+            "description": "False if any sound counted against the match, or the word was heard as another word."
           },
           "wrong_word": {
             "type": "boolean",
@@ -765,7 +487,7 @@
           },
           "ok": {
             "type": "boolean",
-            "description": "Whether this sound counted against the score."
+            "description": "Whether this sound counted against the match."
           },
           "quality": {
             "type": "number",
@@ -802,7 +524,7 @@
               "not_found",
               "too_large",
               "unsupported_audio",
-              "not_scorable",
+              "unprocessable",
               "rate_limited",
               "bad_kind",
               "empty_message",
@@ -964,6 +686,99 @@
           "contact": {
             "type": "string",
             "maxLength": 200
+          }
+        }
+      },
+      "AttemptResult": {
+        "type": "object",
+        "required": [
+          "text",
+          "match",
+          "band",
+          "graded_by",
+          "reference",
+          "words",
+          "ipa_target",
+          "ipa_heard",
+          "worst_word",
+          "flags",
+          "model",
+          "tier"
+        ],
+        "properties": {
+          "text": {
+            "type": "string",
+            "description": "The words checked, punctuation removed."
+          },
+          "match": {
+            "type": "number",
+            "minimum": 0,
+            "maximum": 100,
+            "description": "0 to 100, one decimal: how close this recording is to native Dutch speakers saying the same sentence."
+          },
+          "band": {
+            "type": "string",
+            "enum": [
+              "native_like",
+              "clear",
+              "try_again",
+              "far"
+            ],
+            "description": "Feedback band for this one recording, to pick the app's next step (move on, or try again). Practice feedback, not an assessment of the speaker. native_like 95 and up, clear 75 to 94.9, try_again 55 to 74.9, far under 55."
+          },
+          "graded_by": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Parts that made the match; [\"pronunciation\"] on this endpoint."
+          },
+          "reference": {
+            "type": "boolean",
+            "description": "Always false here: no native recording was compared."
+          },
+          "words": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Word"
+            }
+          },
+          "ipa_target": {
+            "type": "string"
+          },
+          "ipa_heard": {
+            "type": "string"
+          },
+          "worst_word": {
+            "type": [
+              "string",
+              "null"
+            ],
+            "description": "The word to work on first."
+          },
+          "flags": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Notes such as no_reference, wrong_word=N, unobservable_phones=N, missing_phones=N, reduced_phones=N, insertions=N, text_mismatch. New flags may appear within v1."
+          },
+          "model": {
+            "type": "string",
+            "description": "The model; changes when the model improves.",
+            "example": "nl-2026-10"
+          },
+          "tier": {
+            "type": "string",
+            "enum": [
+              "demo",
+              "api_free",
+              "api_trial",
+              "api_pro",
+              "credits",
+              "custom"
+            ],
+            "description": "The plan this recording was charged to."
           }
         }
       }

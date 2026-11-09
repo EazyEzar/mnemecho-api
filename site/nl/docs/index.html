@@ -32,35 +32,35 @@
 <div class="table-wrap"><table>
   <tr><th>Basis-URL</th><td><code>https://api.mnemecho.com/api/v1</code></td></tr>
   <tr><th>Authenticatie</th><td><code>Authorization: Bearer &lt;sleutel&gt;</code> of <code>X-API-Key: &lt;sleutel&gt;</code></td></tr>
-  <tr><th>Sleutel</th><td>Gratis op <a href="https://account.mnemecho.com/keys">account.mnemecho.com/keys</a>; zonder sleutel 3 scores per uur om te proberen. Gratis en zonder sleutel beoordelen alleen deze vijf zinnen; een eigen zin vraagt een betaald abonnement: <span lang="nl">Breda ligt in Noord-Brabant.</span>; <span lang="nl">Woon je in Alkmaar?</span>; <span lang="nl">Vroeger was alles beter.</span>; <span lang="nl">Zij reizen duizenden kilometers.</span>; <span lang="nl">Deze collega&#39;s hebben gelijk.</span></td></tr>
-  <tr><th>Beoordelen</th><td><code>POST /score/text</code> met het formulierveld <code>text</code> (1 tot 12 woorden) en het bestand <code>audio</code> (wav, flac, ogg of mp3, maximaal 15 seconden en 4 MB)</td></tr>
+  <tr><th>Sleutel</th><td>Gratis op <a href="https://account.mnemecho.com/keys">account.mnemecho.com/keys</a>; zonder sleutel 3 opnames per uur om te proberen. Gratis en zonder sleutel verwerken alleen deze vijf zinnen; een eigen zin vraagt een betaald abonnement: <span lang="nl">Breda ligt in Noord-Brabant.</span>; <span lang="nl">Woon je in Alkmaar?</span>; <span lang="nl">Vroeger was alles beter.</span>; <span lang="nl">Zij reizen duizenden kilometers.</span>; <span lang="nl">Deze collega&#39;s hebben gelijk.</span></td></tr>
+  <tr><th>Feedback</th><td><code>POST /attempt/text</code> met het formulierveld <code>text</code> (1 tot 12 woorden) en het bestand <code>audio</code> (wav, flac, ogg of mp3, maximaal 15 seconden en 4 MB)</td></tr>
   <tr><th>Wat er over is</th><td><code>GET /usage</code>; een opgebruikt quotum geeft 402 met <code>resets_at</code></td></tr>
   <tr><th>Iets missen?</th><td><code>POST /feedback</code>, zonder sleutel</td></tr>
   <tr><th>Bereikbaar?</th><td><code>GET /status</code>, zonder sleutel</td></tr>
 </table></div>
 
-<pre><code>curl -X POST https://api.mnemecho.com/api/v1/score/text \
+<pre><code>curl -X POST https://api.mnemecho.com/api/v1/attempt/text \
   -H "Authorization: Bearer $MNEMECHO_KEY" \
   -F "text=In februari is het Valentijnsdag." \
   -F "audio=@attempt.wav"</code></pre>
 
 <h2>Wat je terugkrijgt</h2>
 <ul>
-  <li><code>score</code>: 0 tot 100, afgezet tegen moedertaalsprekers. 90 en hoger klinkt als een moedertaalspreker.</li>
+  <li><code>match</code>: 0 tot 100, afgezet tegen moedertaalsprekers. 90 en hoger klinkt als een moedertaalspreker.</li>
   <li><code>band</code>: de feedbackband voor deze opname, om de volgende stap te kiezen (door, of nog eens proberen); oefenfeedback, geen beoordeling van de spreker. <code>native_like</code> (95 en hoger), <code>clear</code> (75 tot 94,9), <code>try_again</code> (55 tot 74,9) of <code>far</code> (onder 55).</li>
   <li><code>words</code>: per woord of het goed was, of er een ander woord werd gezegd (<code>wrong_word</code>), en per klank wat verwacht werd, wat klonk, en een tip in het Engels.</li>
   <li><code>worst_word</code>: het woord om eerst aan te werken.</li>
   <li><code>flags</code>: opmerkingen over de poging.</li>
 </ul>
 
-<h2>Wat wordt beoordeeld</h2>
+<h2>Waar de feedback over gaat</h2>
 <p>Alleen de uitspraak: of elke verwachte klank gezegd werd, en goed, en of elk woord het
-  woord uit de tekst is. Ritme, toonhoogte en klinkerlengte worden hier niet beoordeeld,
+  woord uit de tekst is. Ritme, toonhoogte en klinkerlengte tellen hier niet mee,
   want daarvoor is een opname van een moedertaalspreker van dezelfde zin nodig. Stemklank
   wordt nooit beoordeeld.</p>
 
 <h2>Privacy</h2>
-<p>Audio en tekst worden in het geheugen beoordeeld en weggegooid, nooit opgeslagen.</p>
+<p>Audio en tekst worden in het geheugen nagekeken en weggegooid, nooit opgeslagen.</p>
 
 <h2>Voor machines</h2>
 <p><a href="/openapi.json">openapi.json</a> · <a href="/llms.txt">llms.txt</a> ·

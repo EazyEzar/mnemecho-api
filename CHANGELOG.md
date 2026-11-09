@@ -5,9 +5,14 @@ flags may be added; existing ones keep working.
 
 ## 2026-11-09
 
+- `POST /score/text` (and its first name `POST /score`) is now `POST /attempt/text`,
+  and the response's `score` is now `match`: how close this recording is to native
+  speakers saying the same sentence. The 422 error code `not_scorable` is now
+  `unprocessable`. The example scripts are now `attempt.sh`, `attempt.py` and
+  `attempt.mjs`.
 - `verdict` is now `band`, and its values are `native_like` (95 and up), `clear`
   (75 to 94.9), `try_again` (55 to 74.9) and `far` (under 55). A band is practice
-  feedback on one recording, not an assessment of the speaker. This one rename breaks
+  feedback on one recording, not an assessment of the speaker. These renames break
   the v1 promise above; no client was live on the old names.
 
 ## 2026-10-24
