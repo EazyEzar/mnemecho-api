@@ -29,7 +29,7 @@ curl -X POST https://api.mnemecho.com/api/v1/score/text \
 ```json
 {
   "score": 91.6,
-  "verdict": "pass",
+  "band": "clear",
   "worst_word": "februari",
   "words": [
     {"word": "februari", "ok": false, "wrong_word": false, "sounds": [

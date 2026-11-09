@@ -24,7 +24,7 @@ description: Samenvatting van de mnemEcho Uitspraak-API v1 in het Nederlands. De
 <h2>Wat je terugkrijgt</h2>
 <ul>
   <li><code>score</code>: 0 tot 100, afgezet tegen moedertaalsprekers. 90 en hoger klinkt als een moedertaalspreker.</li>
-  <li><code>verdict</code>: de feedbackband voor deze opname, om de volgende stap te kiezen (door, of nog eens proberen); oefenfeedback, geen beoordeling van de spreker. <code>excellent</code> (95 en hoger), <code>pass</code> (75 tot 94,9), <code>marginal_fail</code> (55 tot 74,9) of <code>hard_fail</code> (onder 55).</li>
+  <li><code>band</code>: de feedbackband voor deze opname, om de volgende stap te kiezen (door, of nog eens proberen); oefenfeedback, geen beoordeling van de spreker. <code>native_like</code> (95 en hoger), <code>clear</code> (75 tot 94,9), <code>try_again</code> (55 tot 74,9) of <code>far</code> (onder 55).</li>
   <li><code>words</code>: per woord of het goed was, of er een ander woord werd gezegd (<code>wrong_word</code>), en per klank wat verwacht werd, wat klonk, en een tip in het Engels.</li>
   <li><code>worst_word</code>: het woord om eerst aan te werken.</li>
   <li><code>flags</code>: opmerkingen over de poging.</li>
