@@ -1,5 +1,5 @@
 title: Uitspraak-API
-description: De mnemEcho Uitspraak-API beoordeelt gesproken Nederlands tegen de tekst: een score van 0 tot 100, een oordeel, en elk woord en elke klank gemarkeerd. Standaard privé.
+description: De mnemEcho Uitspraak-API beoordeelt gesproken Nederlands tegen de tekst: een score van 0 tot 100, een kort label, en elk woord en elke klank gemarkeerd. Standaard privé.
 ---
 <section class="hero">
   <p class="tagline" lang="en">Echo it until it's yours.</p>
@@ -7,7 +7,7 @@ description: De mnemEcho Uitspraak-API beoordeelt gesproken Nederlands tegen de 
   <p class="lead">Het oor van een Nederlandse docent voor je app. Spraak-naar-tekst vertelt je
     welke woorden er klonken. mnemEcho kent de zin en vertelt je welke klanken goed waren.</p>
   <p class="lead">Stuur een Nederlandse zin en een opname van iemand die hem uitspreekt. Je
-    krijgt een score van 0 tot 100 terug, een oordeel, en elk woord en elke klank
+    krijgt een score van 0 tot 100 terug, een kort label, en elk woord en elke klank
     gemarkeerd, met een korte tip bij elke klank die beter kan.</p>
   <div class="cta">
     <a class="button primary" href="/nl/docs/">Lees de API-docs</a>
@@ -18,9 +18,9 @@ description: De mnemEcho Uitspraak-API beoordeelt gesproken Nederlands tegen de 
 <h2>Wat je terugkrijgt</h2>
 <div class="grid two">
   <div class="card">
-    <h3>Een score en een oordeel</h3>
-    <p>Eén getal, afgezet tegen moedertaalsprekers, en een oordeel waar je code op kan
-      handelen: <code>excellent</code>, <code>pass</code>, <code>marginal_fail</code> of <code>hard_fail</code>.</p>
+    <h3>Een score en een kort label</h3>
+    <p>Eén getal, afgezet tegen moedertaalsprekers, en een kort label waar je code mee kan
+      werken: <code>excellent</code>, <code>pass</code>, <code>marginal_fail</code> of <code>hard_fail</code>.</p>
   </div>
   <div class="card">
     <h3>Elke klank</h3>
@@ -49,11 +49,11 @@ description: De mnemEcho Uitspraak-API beoordeelt gesproken Nederlands tegen de 
 
 <h2>Voor wie</h2>
 <div class="grid">
-  <div class="card"><h3>Examentraining</h3><p>Weet dat het spreken klaar is voor het inburgerings- of NT2-examen.</p></div>
-  <div class="card"><h3>Scholen en docenten</h3><p>Spreekhuiswerk klank voor klank nagekeken, zodat lestijd naar lesgeven gaat.</p></div>
+  <div class="card"><h3>Taalleerapps</h3><p>Spreekoefening met feedback op elke klank.</p></div>
+  <div class="card"><h3>Oefenen tussen de lessen</h3><p>Leerlingen krijgen feedback op elke klank; de score blijft bij de leerling.</p></div>
   <div class="card"><h3>AI-tutors en agents</h3><p>Geef je agent het oor van een Nederlandse docent. De API staat beschreven in <a href="/llms.txt">llms.txt</a> en <a href="/openapi.json">OpenAPI</a>.</p></div>
   <div class="card"><h3>Stem- en nasynchronisatie-QA</h3><p>Controleer of een Nederlandse stem, synthetisch of menselijk, elke regel goed uitspreekt.</p></div>
-  <div class="card"><h3>Games</h3><p>Spreek om te spelen: een oordeel dat snel genoeg is voor de volgende zet.</p></div>
+  <div class="card"><h3>Games</h3><p>Spreek om te spelen: een resultaat dat snel genoeg is voor de volgende zet.</p></div>
   <div class="card"><h3>Spraakdata-teams</h3><p>Past deze opname bij haar zin? Een score per fragment, een vlag als het niet klopt.</p></div>
 </div>
 
