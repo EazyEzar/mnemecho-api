@@ -12,6 +12,8 @@
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/site.js" defer></script>
+<script src="https://cdn.paddle.com/paddle/v2/paddle.js" defer></script>
+<script src="/assets/checkout.js" defer></script>
 </head>
 <body class="page-pricing">
 <a class="skip" href="#main">Naar de inhoud</a>
@@ -41,14 +43,19 @@
     <h3>Per maand</h3>
     <p class="price">€7,99 <span class="per">per maand</span></p>
     <p>Elke maand gefactureerd.</p>
+    <a class="button secondary" data-buy="month" href="https://account.mnemecho.com/plan/checkout?price=month">Kies per maand</a>
   </div>
   <div class="plan">
     <h3>Per jaar</h3>
     <p class="price">€59,99 <span class="per">per jaar</span></p>
     <p>Eens per jaar gefactureerd, €5 per maand.</p>
+    <a class="button secondary" data-buy="year" href="https://account.mnemecho.com/plan/checkout?price=year">Kies per jaar</a>
   </div>
 </div>
 </div>
+<p class="checkout-note" id="checkout-note" role="status" hidden></p>
+<div id="checkout" hidden data-env="sandbox" data-token="test_3347d4e0eaf5bfc8035552c6fa7"
+  data-month="pri_01m6v07ttbg6w0ccve3rz4a0b1" data-year="pri_01m6v08h1e73gtx6n5bc0kp8yw" data-account="https://account.mnemecho.com"></div>
 <p class="small muted">Prijzen zijn inclusief btw. Paddle, onze <span lang="en">merchant of
   record</span>, regelt de betaling en stuurt de factuur.</p>
 

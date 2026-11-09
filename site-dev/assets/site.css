@@ -174,7 +174,7 @@ th { font-weight: 700; }
 @media (min-width: 900px) { .plan { border-top: 0; } .plans { border-left: 1px solid var(--line); } }
 .plan h3 { margin: 0; font-size: 1rem; color: var(--muted); }
 .plan .price { margin: 6px 0 10px; font-size: 2.25rem; letter-spacing: -0.01em; font-variant-numeric: tabular-nums; }
-.plan p:last-child { margin: 0; }
+.plan p:last-of-type { margin: 0; }
 .per { font-size: 1rem; font-weight: 600; color: var(--muted); letter-spacing: 0; }
 
 .button { transition: filter 160ms ease-out, transform 160ms cubic-bezier(0.2, 0.8, 0.2, 1), background-color 160ms ease-out; }
@@ -192,3 +192,8 @@ html { accent-color: var(--brand); caret-color: var(--brand); scrollbar-color: v
 @media (prefers-reduced-motion: reduce) {
   .button { transition: none; }
 }
+
+/* Phase 187: Paddle's checkout on the pricing page */
+.plan .button { margin-top: 14px; }
+.checkout-note { margin: 12px 0 0; padding: 12px 16px; border-radius: 12px; background: var(--code-bg); border: 1px solid var(--line); }
+.checkout-note[data-kind="error"] { border-color: color-mix(in srgb, #c0392b 50%, var(--line)); }

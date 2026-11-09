@@ -18,14 +18,19 @@ description: mnemEcho prices: the learner app at EUR 7.99 a month or EUR 59.99 a
     <h3>Monthly</h3>
     <p class="price">€7.99 <span class="per">a month</span></p>
     <p>Billed every month.</p>
+    <a class="button secondary" data-buy="month" href="{{account_url}}/plan/checkout?price=month">Choose monthly</a>
   </div>
   <div class="plan">
     <h3>Yearly</h3>
     <p class="price">€59.99 <span class="per">a year</span></p>
     <p>Billed once a year, €5 a month.</p>
+    <a class="button secondary" data-buy="year" href="{{account_url}}/plan/checkout?price=year">Choose yearly</a>
   </div>
 </div>
 </div>
+<p class="checkout-note" id="checkout-note" role="status" hidden></p>
+<div id="checkout" hidden data-env="{{paddle_env}}" data-token="{{paddle_token}}"
+  data-month="{{price_month}}" data-year="{{price_year}}" data-account="{{account_url}}"></div>
 <p class="small muted">Prices include VAT. Paddle, our merchant of record, takes the
   payment and sends the invoice.</p>
 
