@@ -1,29 +1,6 @@
-<!doctype html>
-<html lang="nl">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Uitspraak-API · mnemEcho</title>
-<meta name="description" content="De mnemEcho Uitspraak-API geeft oefenfeedback op één opname: een match van 0 tot 100, een feedbackband, en elk woord en elke klank gemarkeerd. Standaard privé.">
-<link rel="canonical" href="https://mnemecho.com/nl/api/">
-<link rel="alternate" hreflang="en" href="https://mnemecho.com/en/api/"><link rel="alternate" hreflang="nl" href="https://mnemecho.com/nl/api/"><link rel="alternate" hreflang="x-default" href="https://mnemecho.com/">
-<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
-<link rel="icon" href="/assets/favicon-32.png" sizes="32x32">
-<link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
-<link rel="stylesheet" href="/assets/site.css">
-<script src="/assets/site.js" defer></script>
-</head>
-<body class="page-api">
-<a class="skip" href="#main">Naar de inhoud</a>
-<header class="top">
-  <a class="brand" href="/nl/" aria-label="mnemEcho">
-    <img class="logo-light" src="/assets/mnemecho-lockup.svg" alt="mnemEcho" width="150" height="31">
-    <img class="logo-dark" src="/assets/mnemecho-lockup-dark.svg" alt="" width="150" height="31">
-  </a>
-  <nav class="nav"><a href="/nl/">Nederlands leren</a><a href="/nl/api/" aria-current="page">Voor ontwikkelaars</a><a href="/nl/docs/">API-docs</a><a href="/nl/pricing/">Prijzen</a><a href="/nl/status/">Status</a></nav>
-  <a class="lang" href="/en/api/" hreflang="en" lang="en" data-lang="en">English</a>
-</header>
-<main id="main">
+title: Uitspraak-API
+description: De mnemEcho Uitspraak-API geeft oefenfeedback op één opname: een match van 0 tot 100, een feedbackband, en elk woord en elke klank gemarkeerd. Standaard privé.
+---
 <section class="hero">
   <p class="tagline" lang="en">Echo it until it's yours.</p>
   <h1>Feedback op Nederlandse uitspraak, klank voor klank.</h1>
@@ -64,7 +41,7 @@
 </div>
 
 <h2>Eén aanroep</h2>
-<pre><code>curl -X POST https://api.mnemecho.com/api/v1/attempt/text \
+<pre><code>curl -X POST {{api_base}}/attempt/text \
   -H "Authorization: Bearer $MNEMECHO_KEY" \
   -F "text=In februari is het Valentijnsdag." \
   -F "audio=@attempt.wav"</code></pre>
@@ -84,30 +61,22 @@
 <p>Een match beschrijft één opname van één zin: hoe dicht de klanken liggen bij
   moedertaalsprekers die dezelfde zin zeggen. Het is feedback om te oefenen, in taalleerapps,
   games en stem-QA. Het zegt niets over iemands kunnen en is geen examenuitslag. Onze
-  <a href="/nl/terms/">voorwaarden</a> verbieden het gebruik ervan om beslissingen te nemen of
+  <a href="/nl/terms/">API-voorwaarden</a> verbieden het gebruik ervan om beslissingen te nemen of
   te ondersteunen over iemands onderwijs, werk, verblijfsstatus, gezondheid of rechten.</p>
 
 <h2>Standaard privé</h2>
 <p>Je audio en tekst worden in het geheugen nagekeken en daarna weggegooid. Ze worden
   nooit opgeslagen en nooit gebruikt om iets te trainen. Per verzoek bewaren we één
   gebruiksregel (tijd, status, lengte van de audio, match) om je limieten te tellen. Meer
-  in de <a href="/nl/privacy/">privacyverklaring</a>.</p>
+  in de <a href="https://mnemecho.com/nl/privacy/">privacyverklaring</a>.</p>
 
 <h2>De leerapp</h2>
 <p>mnemEcho begon als app die mensen leert Nederlands uit het hoofd te spreken: luister
   naar een moedertaalspreker, spreek mee, en zeg de zin daarna vanuit het Engels, met
-  feedback op elke klank. De API draait op dezelfde beoordeling. De app heeft <a href="/nl/">een eigen pagina</a>.</p>
+  feedback op elke klank. De API draait op dezelfde beoordeling. De app heeft <a href="https://mnemecho.com/nl/">een eigen pagina</a>.</p>
 
 <h2>Een sleutel krijgen</h2>
 <p>Maak een gratis sleutel op <a href="https://account.mnemecho.com/keys">account.mnemecho.com</a>:
   log in met je e-mail of Google, zonder creditcard, in ongeveer een minuut. De gratis
   laag verwerkt 5 opnames per uur en 10 per dag. Alle abonnementen staan op de
   <a href="/nl/pricing/">prijspagina</a>.</p>
-
-</main>
-<footer class="foot">
-  <p>mnemEcho is een product van Invership B.V. · KvK 97741876 · btw NL868210985B01 · Mechelenstraat 66, 4826 KN Breda</p>
-  <p><a href="mailto:hello@mnemecho.com">hello@mnemecho.com</a> · <a href="/nl/terms/">Voorwaarden</a> · <a href="/nl/privacy/">Privacy</a> · <a href="/nl/refunds/">Terugbetaling</a> · <a href="/nl/credits/">Credits</a></p>
-</footer>
-</body>
-</html>

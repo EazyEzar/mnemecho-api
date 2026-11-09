@@ -1,4 +1,7 @@
-"""Build the static mnemecho.com site from site-src/ into site/.
+"""Build the static sites from site-src/: mnemecho.com (the learner app, pages/ into
+site/) and the developer site at api.mnemecho.com (dev/ into site-dev/, served by
+the app server on the API hostname). The two are kept apart so mnemecho.com shows
+only the learner app.
 
 Each page in site-src/pages/<lang>/<name>.html starts with header lines
 (title:, description:), a line '---', then its body HTML. The build wraps every
@@ -20,11 +23,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 SRC = ROOT / "site-src"
 OUT = ROOT / "site"
+OUT_DEV = ROOT / "site-dev"
 LANGS = ("en", "nl")
 
 CHROME = {
     "en": {
-        "nav": [("", "Learn Dutch"), ("api", "For developers"), ("docs", "API docs"), ("pricing", "Pricing"), ("status", "Status")],
+        "nav": [("", "Learn Dutch"), ("pricing", "Pricing")],
+        "dev_nav": [("", "Pronunciation API"), ("docs", "Docs"), ("pricing", "Plans"), ("status", "Status")],
         "switch": "Nederlands",
         "legal": [("terms", "Terms"), ("privacy", "Privacy"), ("refunds", "Refunds"), ("credits", "Credits")],
         "company": "mnemEcho is a product of",
@@ -33,7 +38,8 @@ CHROME = {
         "skip": "Skip to content",
     },
     "nl": {
-        "nav": [("", "Nederlands leren"), ("api", "Voor ontwikkelaars"), ("docs", "API-docs"), ("pricing", "Prijzen"), ("status", "Status")],
+        "nav": [("", "Nederlands leren"), ("pricing", "Prijzen")],
+        "dev_nav": [("", "Uitspraak-API"), ("docs", "Docs"), ("pricing", "Abonnementen"), ("status", "Status")],
         "switch": "English",
         "legal": [("terms", "Voorwaarden"), ("privacy", "Privacy"), ("refunds", "Terugbetaling"), ("credits", "Credits")],
         "company": "mnemEcho is een product van",
@@ -67,13 +73,16 @@ def fill(text: str, site: dict) -> str:
     return re.sub(r"\{\{(\w+)\}\}", one, text)
 
 
-def render(lang: str, name: str, meta: dict, body: str, site: dict) -> str:
+def render(lang: str, name: str, meta: dict, body: str, site: dict, dev: bool = False) -> str:
     c = CHROME[lang]
     other = "nl" if lang == "en" else "en"
     nav = "".join(
         f'<a href="{url_of(lang, n)}"{" aria-current=\"page\"" if n == name else ""}>{label}</a>'
-        for n, label in c["nav"])
-    legal = " · ".join(f'<a href="{url_of(lang, n)}">{label}</a>' for n, label in c["legal"])
+        for n, label in c["dev_nav" if dev else "nav"])
+    # The developer site has its own API terms; every other legal page is mnemecho.com's.
+    legal = " · ".join(
+        f'<a href="{url_of(lang, n) if (n == "terms" or not dev) else site["learner_url"] + url_of(lang, n)}">{label}</a>'
+        for n, label in c["legal"])
     alternates = "".join(
         f'<link rel="alternate" hreflang="{l}" href="{site["base_url"]}{url_of(l, name)}">' for l in LANGS)
     draft = (f'<p class="draft" role="note">{c["draft"]}</p>'
@@ -94,7 +103,7 @@ def render(lang: str, name: str, meta: dict, body: str, site: dict) -> str:
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/site.js" defer></script>
 </head>
-<body class="page-{name or 'home'}">
+<body class="page-{name or ('api' if dev else 'home')}">
 <a class="skip" href="#main">{c["skip"]}</a>
 <header class="top">
   <a class="brand" href="{url_of(lang, "")}" aria-label="mnemEcho">
@@ -122,7 +131,7 @@ ROOT_INDEX = """<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>mnemEcho</title>
-<meta name="description" content="mnemEcho: say real Dutch sentences from memory, with feedback on every sound. Also a pronunciation API for Dutch.">
+<meta name="description" content="{description}">
 <link rel="alternate" hreflang="en" href="{base}/en/">
 <link rel="alternate" hreflang="nl" href="{base}/nl/">
 <link rel="alternate" hreflang="x-default" href="{base}/">
@@ -164,43 +173,54 @@ HEADERS = """/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.mnemecho.com; frame-ancestors 'none'; base-uri 'self'
+  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'
 /assets/*
   Cache-Control: public, max-age=86400
-/openapi.json
-  Access-Control-Allow-Origin: *
-/llms.txt
-  Content-Type: text/plain; charset=utf-8
 """
+
+
+LEARNER_DESCRIPTION = "mnemEcho: say real Dutch sentences from memory, with feedback on every sound."
+DEV_DESCRIPTION = "The mnemEcho Pronunciation API for Dutch: practice feedback on a recording of a sentence."
+
+
+def build_one(site: dict, src: Path, out: Path, pages: list[str], dev: bool) -> list[Path]:
+    """One static site: its pages in both languages, root chooser, 404, sitemap."""
+    if out.exists():
+        shutil.rmtree(out)
+    shutil.copytree(SRC / "assets", out / "assets")
+    written = []
+    urls = []
+    for lang in LANGS:
+        for name in pages:
+            meta, body = read_page(src / lang / f"{name or 'index'}.html")
+            target = out / lang / name / "index.html" if name else out / lang / "index.html"
+            target.parent.mkdir(parents=True, exist_ok=True)
+            target.write_text(render(lang, name, meta, body, site, dev), encoding="utf-8")
+            written.append(target)
+            urls.append(site["base_url"] + url_of(lang, name))
+    description = DEV_DESCRIPTION if dev else LEARNER_DESCRIPTION
+    (out / "index.html").write_text(
+        ROOT_INDEX.format(base=site["base_url"], description=description), encoding="utf-8")
+    (out / "404.html").write_text(NOT_FOUND, encoding="utf-8")
+    (out / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {site['base_url']}/sitemap.xml\n")
+    (out / "sitemap.xml").write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        + "".join(f"  <url><loc>{u}</loc><lastmod>{site['updated']}</lastmod></url>\n" for u in urls)
+        + "</urlset>\n")
+    written += [out / "index.html", out / "404.html"]
+    return written
 
 
 def build() -> list[Path]:
     site = json.loads((SRC / "site.json").read_text(encoding="utf-8"))
-    if OUT.exists():
-        shutil.rmtree(OUT)
-    shutil.copytree(SRC / "assets", OUT / "assets")
-    written = []
-    urls = []
-    for lang in LANGS:
-        for name in site["pages"]:
-            src = SRC / "pages" / lang / f"{name or 'index'}.html"
-            meta, body = read_page(src)
-            target = OUT / lang / name / "index.html" if name else OUT / lang / "index.html"
-            target.parent.mkdir(parents=True, exist_ok=True)
-            target.write_text(render(lang, name, meta, body, site), encoding="utf-8")
-            written.append(target)
-            urls.append(site["base_url"] + url_of(lang, name))
-    (OUT / "index.html").write_text(ROOT_INDEX.format(base=site["base_url"]), encoding="utf-8")
-    (OUT / "404.html").write_text(NOT_FOUND, encoding="utf-8")
+    learner = dict(site, learner_url=site["base_url"])
+    written = build_one(learner, SRC / "pages", OUT, site["pages"], dev=False)
     (OUT / "_headers").write_text(HEADERS, encoding="utf-8")
-    (OUT / "robots.txt").write_text(f"User-agent: *\nAllow: /\nSitemap: {site['base_url']}/sitemap.xml\n")
-    (OUT / "sitemap.xml").write_text(
-        '<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
-        + "".join(f"  <url><loc>{u}</loc><lastmod>{site['updated']}</lastmod></url>\n" for u in urls)
-        + "</urlset>\n")
+    dev = dict(site, base_url=site["dev_base_url"], learner_url=site["base_url"])
+    written += build_one(dev, SRC / "dev", OUT_DEV, site["dev_pages"], dev=True)
     for name in ("llms.txt", "openapi.json"):
-        shutil.copy(ROOT / name, OUT / name)
-    written += [OUT / "index.html", OUT / "404.html", OUT / "llms.txt"]
+        shutil.copy(ROOT / name, OUT_DEV / name)
+    written.append(OUT_DEV / "llms.txt")
     return written
 
 

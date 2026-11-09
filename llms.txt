@@ -8,10 +8,10 @@ Only pronunciation is graded on this endpoint; rhythm, pitch and vowel length ne
 
 ## Docs
 
-- [API reference](https://mnemecho.com/en/docs/): endpoints, the response field by field, feedback bands, flags, errors, limits
-- [OpenAPI 3.1](https://mnemecho.com/openapi.json): machine-readable description
-- [Pricing](https://mnemecho.com/en/pricing/): early access, free tier, Pro, credits
-- [Status](https://mnemecho.com/en/status/): `GET /status` needs no key
+- [API reference](https://api.mnemecho.com/en/docs/): endpoints, the response field by field, feedback bands, flags, errors, limits
+- [OpenAPI 3.1](https://api.mnemecho.com/openapi.json): machine-readable description
+- [Pricing](https://api.mnemecho.com/en/pricing/): early access, free tier, Pro, credits
+- [Status](https://api.mnemecho.com/en/status/): `GET /status` needs no key
 
 ## Endpoints
 
@@ -40,4 +40,4 @@ Only pronunciation is graded on this endpoint; rhythm, pitch and vowel length ne
 
 - [Examples](https://github.com/EazyEzar/mnemecho-api/tree/main/examples): curl, Python, JavaScript
 - [Changelog](https://github.com/EazyEzar/mnemecho-api/blob/main/CHANGELOG.md)
-- [Privacy](https://mnemecho.com/en/privacy/), [Terms](https://mnemecho.com/en/terms/)
+- [Privacy](https://mnemecho.com/en/privacy/), [API terms](https://api.mnemecho.com/en/terms/)
