@@ -35,7 +35,7 @@ def score(audio_path: str, text: str) -> dict:
 def main() -> None:
     audio_path, text = sys.argv[1], sys.argv[2]
     result = score(audio_path, text)
-    print(f"{result['score']} {result['verdict']}")
+    print(f"{result['score']} {result['band']}")
     for word in result["words"]:
         if word["wrong_word"]:
             print(f"  {word['word']}: another word was said here")

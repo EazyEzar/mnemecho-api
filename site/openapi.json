@@ -629,7 +629,7 @@
         "required": [
           "text",
           "score",
-          "verdict",
+          "band",
           "graded_by",
           "reference",
           "words",
@@ -651,15 +651,15 @@
             "maximum": 100,
             "description": "0 to 100, one decimal, set against native Dutch speakers."
           },
-          "verdict": {
+          "band": {
             "type": "string",
             "enum": [
-              "excellent",
-              "pass",
-              "marginal_fail",
-              "hard_fail"
+              "native_like",
+              "clear",
+              "try_again",
+              "far"
             ],
-            "description": "Feedback band for this one recording, to pick the app's next step (move on, or try again). Practice feedback, not an assessment of the speaker. excellent 95 and up, pass 75 to 94.9, marginal_fail 55 to 74.9, hard_fail under 55."
+            "description": "Feedback band for this one recording, to pick the app's next step (move on, or try again). Practice feedback, not an assessment of the speaker. native_like 95 and up, clear 75 to 94.9, try_again 55 to 74.9, far under 55."
           },
           "graded_by": {
             "type": "array",

@@ -1,6 +1,6 @@
 # mnemEcho Pronunciation API
 
-> Score Dutch speech against its text. Send a Dutch sentence (1 to 12 words) and a recording of someone saying it; get practice feedback on that recording: a 0 to 100 pronunciation score, a feedback band in the field `verdict` (excellent, pass, marginal_fail, hard_fail), and every word and sound marked, with a short English tip on each wrong sound. Words said as another word are flagged (wrong_word). Audio is scored in memory and never stored.
+> Score Dutch speech against its text. Send a Dutch sentence (1 to 12 words) and a recording of someone saying it; get practice feedback on that recording: a 0 to 100 pronunciation score, a feedback band `band` (native_like, clear, try_again, far), and every word and sound marked, with a short English tip on each wrong sound. Words said as another word are flagged (wrong_word). Audio is scored in memory and never stored.
 
 Base URL: https://api.mnemecho.com/api/v1
 Auth: `Authorization: Bearer <key>` or `X-API-Key: <key>`. Free keys in a minute at https://account.mnemecho.com/keys (email or Google, no card): 5 scores an hour, 10 a day. With no key: 3 scores an hour per address, to try it. The free and no key tiers score only these five sentences (case and punctuation aside): "Breda ligt in Noord-Brabant.", "Woon je in Alkmaar?", "Vroeger was alles beter.", "Zij reizen duizenden kilometers.", "Deze collega's hebben gelijk."; any other sentence needs a paid plan (403 `fixed_texts_only`).
@@ -15,7 +15,7 @@ Only pronunciation is graded on this endpoint; rhythm, pitch and vowel length ne
 
 ## Endpoints
 
-- `POST /score/text` multipart: `text` (form field), `audio` (file: wav, flac, ogg or mp3, at most 15 s and 4 MB). Returns score, verdict, words[].sounds[], worst_word, flags, model, tier. `POST /score` is the same call.
+- `POST /score/text` multipart: `text` (form field), `audio` (file: wav, flac, ogg or mp3, at most 15 s and 4 MB). Returns score, band, words[].sounds[], worst_word, flags, model, tier. `POST /score` is the same call.
 - `GET /usage` with a key: each plan on the account and what is left this hour, day or month. Costs nothing.
 - `POST /feedback` no key needed: JSON `{"kind": "need|bug|payment_method|other", "message": "...", "contact": "..."}`. Tell us what you need, including a way to pay we do not take yet.
 - `GET /health` with a key: your client name, plans, and what a request may hold.

@@ -3,6 +3,13 @@
 Changes to the mnemEcho Pronunciation API, newest first. Within v1, fields and
 flags may be added; existing ones keep working.
 
+## 2026-11-09
+
+- `verdict` is now `band`, and its values are `native_like` (95 and up), `clear`
+  (75 to 94.9), `try_again` (55 to 74.9) and `far` (under 55). A band is practice
+  feedback on one recording, not an assessment of the speaker. This one rename breaks
+  the v1 promise above; no client was live on the old names.
+
 ## 2026-10-24
 
 - Self-serve keys: make, list and revoke them at https://account.mnemecho.com/keys.

@@ -26,7 +26,7 @@ if (!resp.ok) {
   process.exit(1);
 }
 
-console.log(`${body.score} ${body.verdict}`);
+console.log(`${body.score} ${body.band}`);
 for (const word of body.words) {
   if (word.wrong_word) {
     console.log(`  ${word.word}: another word was said here`);
