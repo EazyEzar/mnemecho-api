@@ -25,5 +25,10 @@
     "status",
     "terms"
   ],
-  "dev_base_url": "https://api.mnemecho.com"
+  "dev_base_url": "https://api.mnemecho.com",
+  "account_url": "https://account.mnemecho.com",
+  "paddle_env": "sandbox",
+  "paddle_token": "test_3347d4e0eaf5bfc8035552c6fa7",
+  "price_month": "pri_01m6v07ttbg6w0ccve3rz4a0b1",
+  "price_year": "pri_01m6v08h1e73gtx6n5bc0kp8yw"
 }

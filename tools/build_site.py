@@ -88,6 +88,10 @@ def render(lang: str, name: str, meta: dict, body: str, site: dict, dev: bool = 
     draft = (f'<p class="draft" role="note">{c["draft"]}</p>'
              if site["legal_draft"] and name in LEGAL_PAGES else "")
     title = meta["title"] if not name else f'{meta["title"]} · mnemEcho'
+    # Paddle's checkout runs on the learner pricing page only (phase 187).
+    checkout = (f'<script src="{PADDLE_JS}" defer></script>\n'
+                '<script src="/assets/checkout.js" defer></script>\n'
+                if name == "pricing" and not dev else "")
     return f"""<!doctype html>
 <html lang="{lang}">
 <head>
@@ -102,7 +106,7 @@ def render(lang: str, name: str, meta: dict, body: str, site: dict, dev: bool = 
 <link rel="apple-touch-icon" href="/assets/apple-touch-icon.png">
 <link rel="stylesheet" href="/assets/site.css">
 <script src="/assets/site.js" defer></script>
-</head>
+{checkout}</head>
 <body class="page-{name or ('api' if dev else 'home')}">
 <a class="skip" href="#main">{c["skip"]}</a>
 <header class="top">
@@ -169,11 +173,27 @@ NOT_FOUND = """<!doctype html>
 </main></body></html>
 """
 
-HEADERS = """/*
+PADDLE_JS = "https://cdn.paddle.com/paddle/v2/paddle.js"
+# Paddle.js, its overlay frame and its calls; in sandbox it loads its stylesheet from
+# sandbox-cdn.paddle.com (78b walk). Pricing pages only: '!' drops the site wide policy.
+PADDLE_CDNS = "https://cdn.paddle.com https://sandbox-cdn.paddle.com"
+CSP = ("default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; "
+       "font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'")
+PRICING_CSP = (f"default-src 'self'; script-src 'self' 'unsafe-inline' {PADDLE_CDNS}; "
+               f"style-src 'self' 'unsafe-inline' {PADDLE_CDNS}; img-src 'self' data: https://*.paddle.com; "
+               "font-src 'self' https://*.paddle.com; connect-src 'self' https://*.paddle.com; "
+               "frame-src https://*.paddle.com; frame-ancestors 'none'; base-uri 'self'")
+HEADERS = f"""/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
   Permissions-Policy: camera=(), microphone=(), geolocation=()
-  Content-Security-Policy: default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-ancestors 'none'; base-uri 'self'
+  Content-Security-Policy: {CSP}
+/en/pricing/*
+  ! Content-Security-Policy
+  Content-Security-Policy: {PRICING_CSP}
+/nl/pricing/*
+  ! Content-Security-Policy
+  Content-Security-Policy: {PRICING_CSP}
 /assets/*
   Cache-Control: public, max-age=86400
 """
