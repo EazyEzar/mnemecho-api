@@ -4,10 +4,10 @@ Pronunciation feedback on Dutch speech. Send a Dutch sentence and a recording of
 someone saying it; get back practice feedback on that recording: a match from 0 to 100, a feedback band, and every word and
 sound marked, with a short English tip on each sound to work on.
 
-- Docs: https://mnemecho.com/en/docs/
+- Docs: https://api.mnemecho.com/en/docs/
 - OpenAPI: [`openapi.json`](openapi.json)
 - For AI agents: [`llms.txt`](llms.txt)
-- Status: https://mnemecho.com/en/status/
+- Status: https://api.mnemecho.com/en/status/
 
 This repository holds the public documentation, examples and the source of
 mnemecho.com. The service itself is not open source.
@@ -65,9 +65,10 @@ read every one.
 
 ## The site
 
-`site-src/` holds the pages of mnemecho.com in English and Dutch, and
-`tools/build_site.py` builds them into `site/`, which Cloudflare Pages serves as
-is. After editing a page:
+`site-src/pages/` holds mnemecho.com (the learner app) and `site-src/dev/` the
+developer pages at api.mnemecho.com, each in English and Dutch. `tools/build_site.py`
+builds them into `site/`, which Cloudflare Pages serves as is, and `site-dev/`, which
+the API server serves on its own hostname. After editing a page:
 
 ```sh
 python3 tools/build_site.py --check
