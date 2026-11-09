@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>API docs · mnemEcho</title>
-<meta name="description" content="mnemEcho Pronunciation API v1 reference: POST /score/text with Dutch text and audio, the response word by word and sound by sound, verdicts, flags, keys, quota, errors and feedback.">
+<meta name="description" content="mnemEcho Pronunciation API v1 reference: POST /score/text with Dutch text and audio, the response word by word and sound by sound, feedback bands, flags, keys, quota, errors and feedback.">
 <link rel="canonical" href="https://mnemecho.com/en/docs/">
 <link rel="alternate" hreflang="en" href="https://mnemecho.com/en/docs/"><link rel="alternate" hreflang="nl" href="https://mnemecho.com/nl/docs/"><link rel="alternate" hreflang="x-default" href="https://mnemecho.com/">
 <link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
@@ -26,7 +26,8 @@
 <main id="main">
 <h1>API docs</h1>
 <p class="lead">Version 1. Send a short Dutch text and a recording of someone saying it;
-  get back a score, a verdict, and a word by word, sound by sound breakdown.</p>
+  get back practice feedback on that recording: a score, a feedback band, and a word by word,
+  sound by sound breakdown.</p>
 
 <div class="docs">
 <nav class="toc" aria-label="On this page">
@@ -35,7 +36,7 @@
     <li><a href="#keys">Keys and tiers</a></li>
     <li><a href="#score">POST /score/text</a></li>
     <li><a href="#response">The response</a></li>
-    <li><a href="#verdicts">Verdicts</a></li>
+    <li><a href="#verdicts">Feedback bands</a></li>
     <li><a href="#flags">Flags</a></li>
     <li><a href="#feedback">Showing feedback</a></li>
     <li><a href="#usage">GET /usage</a></li>
@@ -205,7 +206,7 @@ console.log(result.score, result.verdict, result.worst_word);</code></pre>
 <h3>A word swapped</h3>
 <p>The same recording sent with the text <span lang="nl">"In maart is het Valentijnsdag."</span>
   The speaker said <span lang="nl">februari</span>, so <span lang="nl">maart</span> is marked as
-  a wrong word and the attempt does not pass.</p>
+  a wrong word and the band is lowered.</p>
 <pre><code>{
   "score": 74.0,
   "verdict": "marginal_fail",
@@ -221,14 +222,18 @@ console.log(result.score, result.verdict, result.worst_word);</code></pre>
   "flags": ["unobservable_phones=1", "wrong_word=1", "no_reference"]
 }</code></pre>
 
-<h2 id="verdicts">Verdicts</h2>
-<p>Use <code>verdict</code> for your logic, and <code>worst_word</code> plus the wrong sounds for feedback.</p>
+<h2 id="verdicts">Feedback bands</h2>
+<p>The <code>verdict</code> field is a feedback band for one recording of one sentence. Use it
+  to pick your app's next step (move on, or try again), and <code>worst_word</code> plus the
+  wrong sounds for what to show. It is practice feedback, not an assessment of the speaker:
+  do not use it to make or support decisions about a person (see the
+  <a href="/en/terms/">terms</a>, A4 and A5).</p>
 <div class="table-wrap"><table>
-  <tr><th>Verdict</th><th>Score</th><th>Meaning</th><th>Suggested action</th></tr>
-  <tr><td><code>excellent</code></td><td>95 to 100</td><td>Native-like.</td><td>Full reward.</td></tr>
-  <tr><td><code>pass</code></td><td>75 to 94.9</td><td>Understood and correct, small slips.</td><td>Accept; show the one wrong sound, if any.</td></tr>
-  <tr><td><code>marginal_fail</code></td><td>55 to 74.9</td><td>Recognisable, but a word or sounds were off.</td><td>Ask for another try; show <code>worst_word</code>.</td></tr>
-  <tr><td><code>hard_fail</code></td><td>under 55</td><td>Mostly wrong, or a different sentence.</td><td>Ask again; play your model audio first.</td></tr>
+  <tr><th>Band</th><th>Score</th><th>Meaning</th><th>Suggested next step</th></tr>
+  <tr><td><code>excellent</code></td><td>95 to 100</td><td>Sounds like native speakers.</td><td>Celebrate; move on.</td></tr>
+  <tr><td><code>pass</code></td><td>75 to 94.9</td><td>Clear, small slips.</td><td>Move on; show the one sound to work on, if any.</td></tr>
+  <tr><td><code>marginal_fail</code></td><td>55 to 74.9</td><td>Recognisable, a word or some sounds to work on.</td><td>Offer another try; show <code>worst_word</code>.</td></tr>
+  <tr><td><code>hard_fail</code></td><td>under 55</td><td>Far from the sentence, or a different sentence.</td><td>Play your model audio, then offer another try.</td></tr>
 </table></div>
 
 <h2 id="flags">Flags</h2>
@@ -237,7 +242,7 @@ console.log(result.score, result.verdict, result.worst_word);</code></pre>
   <tr><td><code>no_reference</code></td><td>Always present: rhythm and pitch were not graded.</td></tr>
   <tr><td><code>wrong_word=N</code></td><td>N words were heard as other words. See <code>words[].wrong_word</code>.</td></tr>
   <tr><td><code>unobservable_phones=N</code></td><td>N expected sounds were not heard in their place at all. A few are forgiven; more count as missing.</td></tr>
-  <tr><td><code>missing_phones=N</code></td><td>N sounds were judged left out, and were charged.</td></tr>
+  <tr><td><code>missing_phones=N</code></td><td>N sounds were heard as left out, and lowered the score.</td></tr>
   <tr><td><code>reduced_phones=N</code></td><td>N sounds that Dutch speakers often drop were dropped, and not charged.</td></tr>
   <tr><td><code>insertions=N</code></td><td>N extra sounds were heard that the text does not have.</td></tr>
   <tr><td><code>text_mismatch</code></td><td>Most of the text was not heard: something else was said, or the wrong clip was sent.</td></tr>
@@ -246,7 +251,7 @@ console.log(result.score, result.verdict, result.worst_word);</code></pre>
 
 <h2 id="feedback">Showing feedback</h2>
 <ol>
-  <li>Lead with the verdict in plain words.</li>
+  <li>Lead with the band in plain, encouraging words.</li>
   <li>Highlight <code>worst_word</code> in the sentence. If its <code>wrong_word</code> is true, say which word was expected.</li>
   <li>Under it, show each sound where <code>ok</code> is false, with its <code>hint</code>. Skip the IPA unless your users know it.</li>
   <li>Show one or two sounds per try. People fix one thing at a time.</li>

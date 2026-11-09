@@ -1,7 +1,7 @@
 # mnemEcho Pronunciation API
 
 Score Dutch speech against its text. Send a Dutch sentence and a recording of
-someone saying it; get back a score from 0 to 100, a verdict, and every word and
+someone saying it; get back practice feedback on that recording: a score from 0 to 100, a feedback band, and every word and
 sound marked, with a short English tip on each sound to work on.
 
 - Docs: https://mnemecho.com/en/docs/

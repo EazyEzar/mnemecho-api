@@ -1,13 +1,13 @@
 title: Pronunciation API
-description: The mnemEcho Pronunciation API scores Dutch speech against its text: a score from 0 to 100, a short label, and every word and sound marked. Private by default.
+description: The mnemEcho Pronunciation API scores Dutch speech against its text: practice feedback on one recording: a score from 0 to 100, a feedback band, and every word and sound marked. Private by default.
 ---
 <section class="hero">
   <p class="tagline">Echo it until it's yours.</p>
-  <h1>Dutch pronunciation, scored sound by sound.</h1>
-  <p class="lead">A Dutch teacher's ear for your app. Speech-to-text tells you the words.
+  <h1>Dutch pronunciation feedback, sound by sound.</h1>
+  <p class="lead">Pronunciation feedback for your app. Speech-to-text tells you the words.
     mnemEcho knows the sentence and tells you which sounds were right.</p>
   <p class="lead">Send a Dutch sentence and a recording of someone saying it. Get back a
-    score from 0 to 100, a short label, and every word and every sound marked, with a short
+    score from 0 to 100 for that recording, a feedback band, and every word and every sound marked, with a short
     English tip on each sound to work on.</p>
   <div class="cta">
     <a class="button primary" href="/en/docs/">Read the API docs</a>
@@ -18,9 +18,9 @@ description: The mnemEcho Pronunciation API scores Dutch speech against its text
 <h2>What you get back</h2>
 <div class="grid two">
   <div class="card">
-    <h3>A score and a short label</h3>
-    <p>One number, set against native Dutch speakers, and a short label your code can use:
-      excellent, pass, marginal fail or hard fail.</p>
+    <h3>A score and a feedback band</h3>
+    <p>One number for the recording, set against native Dutch speakers saying the same
+      sentence, and a band your app can use to pick its next step: move on, or try again.</p>
   </div>
   <div class="card">
     <h3>Every sound</h3>
@@ -30,7 +30,7 @@ description: The mnemEcho Pronunciation API scores Dutch speech against its text
   <div class="card">
     <h3>The wrong word caught</h3>
     <p>A learner who says the right sentence with one word swapped (<span lang="nl">maart</span>
-      for <span lang="nl">februari</span>) is told which word, not given a pass.</p>
+      for <span lang="nl">februari</span>) is told which word, so the feedback is about that word.</p>
   </div>
   <div class="card">
     <h3>Fair to every voice</h3>
@@ -60,11 +60,18 @@ description: The mnemEcho Pronunciation API scores Dutch speech against its text
 <div class="grid">
   <div class="card"><h3>Language learning apps</h3><p>Speaking practice with feedback on every sound.</p></div>
   <div class="card"><h3>Practice between lessons</h3><p>Learners get feedback on every sound; the score stays with the learner.</p></div>
-  <div class="card"><h3>AI tutors and agents</h3><p>Give your agent a Dutch teacher's ear. The API is described in <a href="/llms.txt">llms.txt</a> and <a href="/openapi.json">OpenAPI</a>.</p></div>
+  <div class="card"><h3>AI tutors and agents</h3><p>Give your agent sound-by-sound pronunciation feedback. The API is described in <a href="/llms.txt">llms.txt</a> and <a href="/openapi.json">OpenAPI</a>.</p></div>
   <div class="card"><h3>Voice and dubbing QA</h3><p>Check that a Dutch voice, synthetic or human, says each line right before release.</p></div>
   <div class="card"><h3>Games</h3><p>Speak-to-play: a result fast enough to drive the next move.</p></div>
   <div class="card"><h3>Speech data teams</h3><p>Does this recording match its sentence? A score per clip, a flag when it does not.</p></div>
 </div>
+
+<h2>Practice feedback, not a decision</h2>
+<p>A score describes one recording of one sentence: how close its sounds are to native
+  speakers saying the same sentence. It is feedback for practice, in language learning apps,
+  games and voice QA. It says nothing about a person's ability, and it is not an exam result.
+  Our <a href="/en/terms/">terms</a> forbid using it to make or support decisions about a
+  person's education, work, immigration status, health or rights.</p>
 
 <h2>Private by default</h2>
 <p>Your audio and text are scored in memory and dropped. They are never stored and never
