@@ -24,7 +24,7 @@ LANGS = ("en", "nl")
 
 CHROME = {
     "en": {
-        "nav": [("", "Learn Dutch"), ("api", "For developers"), ("docs", "API docs"), ("pricing", "API pricing"), ("status", "Status")],
+        "nav": [("", "Learn Dutch"), ("api", "For developers"), ("docs", "API docs"), ("pricing", "Pricing"), ("status", "Status")],
         "switch": "Nederlands",
         "legal": [("terms", "Terms"), ("privacy", "Privacy"), ("refunds", "Refunds"), ("credits", "Credits")],
         "company": "mnemEcho is a product of",
@@ -33,7 +33,7 @@ CHROME = {
         "skip": "Skip to content",
     },
     "nl": {
-        "nav": [("", "Nederlands leren"), ("api", "Voor ontwikkelaars"), ("docs", "API-docs"), ("pricing", "API-prijzen"), ("status", "Status")],
+        "nav": [("", "Nederlands leren"), ("api", "Voor ontwikkelaars"), ("docs", "API-docs"), ("pricing", "Prijzen"), ("status", "Status")],
         "switch": "English",
         "legal": [("terms", "Voorwaarden"), ("privacy", "Privacy"), ("refunds", "Terugbetaling"), ("credits", "Credits")],
         "company": "mnemEcho is een product van",
