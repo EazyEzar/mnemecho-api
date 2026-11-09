@@ -4,7 +4,7 @@
     "title": "mnemEcho Pronunciation API",
     "version": "1.1.0",
     "summary": "Score Dutch speech against its text, word by word and sound by sound.",
-    "description": "Send Dutch text and a recording; get a 0 to 100 pronunciation score, a verdict, and every word and sound marked. Audio is scored in memory and never stored. Docs: https://mnemecho.com/en/docs/",
+    "description": "Send Dutch text and a recording; get practice feedback on that recording: a 0 to 100 pronunciation score, a feedback band, and every word and sound marked. Audio is scored in memory and never stored. Docs: https://mnemecho.com/en/docs/",
     "contact": {
       "name": "mnemEcho",
       "email": "hello@mnemecho.com",
@@ -659,7 +659,7 @@
               "marginal_fail",
               "hard_fail"
             ],
-            "description": "excellent 95 and up, pass 75 to 94.9, marginal_fail 55 to 74.9, hard_fail under 55."
+            "description": "Feedback band for this one recording, to pick the app's next step (move on, or try again). Practice feedback, not an assessment of the speaker. excellent 95 and up, pass 75 to 94.9, marginal_fail 55 to 74.9, hard_fail under 55."
           },
           "graded_by": {
             "type": "array",
@@ -735,7 +735,7 @@
           },
           "wrong_word": {
             "type": "boolean",
-            "description": "True when a different word was said in its place. The attempt cannot pass."
+            "description": "True when a different word was said in its place. The band is lowered."
           },
           "sounds": {
             "type": "array",
