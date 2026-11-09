@@ -1,6 +1,6 @@
-"""Score one recording against one Dutch text and print the feedback.
+"""Get feedback on one recording against one Dutch text and print the feedback.
 
-Usage: MNEMECHO_KEY=... python score.py attempt.wav "In februari is het Valentijnsdag."
+Usage: MNEMECHO_KEY=... python attempt.py attempt.wav "In februari is het Valentijnsdag."
 Needs: pip install requests
 """
 import os
@@ -12,12 +12,12 @@ import requests
 API = os.environ.get("MNEMECHO_API", "https://api.mnemecho.com/api/v1")
 
 
-def score(audio_path: str, text: str) -> dict:
-    """POST /score/text, waiting once if the limit answers 429."""
+def attempt(audio_path: str, text: str) -> dict:
+    """POST /attempt/text, waiting once if the limit answers 429."""
     for attempt in range(2):
         with open(audio_path, "rb") as audio:
             resp = requests.post(
-                f"{API}/score/text",
+                f"{API}/attempt/text",
                 headers={"Authorization": f"Bearer {os.environ['MNEMECHO_KEY']}"},
                 data={"text": text},
                 files={"audio": audio},
@@ -34,8 +34,8 @@ def score(audio_path: str, text: str) -> dict:
 
 def main() -> None:
     audio_path, text = sys.argv[1], sys.argv[2]
-    result = score(audio_path, text)
-    print(f"{result['score']} {result['band']}")
+    result = attempt(audio_path, text)
+    print(f"{result['match']} {result['band']}")
     for word in result["words"]:
         if word["wrong_word"]:
             print(f"  {word['word']}: another word was said here")

@@ -1,9 +1,9 @@
 title: API docs
-description: mnemEcho Pronunciation API v1 reference: POST /score/text with Dutch text and audio, the response word by word and sound by sound, feedback bands, flags, keys, quota, errors and feedback.
+description: mnemEcho Pronunciation API v1 reference: POST /attempt/text with Dutch text and audio, the response word by word and sound by sound, feedback bands, flags, keys, quota, errors and feedback.
 ---
 <h1>API docs</h1>
 <p class="lead">Version 1. Send a short Dutch text and a recording of someone saying it;
-  get back practice feedback on that recording: a score, a feedback band, and a word by word,
+  get back practice feedback on that recording: a match, a feedback band, and a word by word,
   sound by sound breakdown.</p>
 
 <div class="docs">
@@ -11,7 +11,7 @@ description: mnemEcho Pronunciation API v1 reference: POST /score/text with Dutc
   <ul>
     <li><a href="#start">Start</a></li>
     <li><a href="#keys">Keys and tiers</a></li>
-    <li><a href="#score">POST /score/text</a></li>
+    <li><a href="#attempt">POST /attempt/text</a></li>
     <li><a href="#response">The response</a></li>
     <li><a href="#bands">Feedback bands</a></li>
     <li><a href="#flags">Flags</a></li>
@@ -54,20 +54,20 @@ description: mnemEcho Pronunciation API v1 reference: POST /score/text with Dutc
 
 <h2 id="keys">Keys and tiers</h2>
 <p>A key belongs to your account, and an account may hold up to five (a staging key,
-  one per app). Your keys share your account's quota. One unit of quota is one scored
+  one per app). Your keys share your account's quota. One unit of quota is one checked
   recording.</p>
 <div class="table-wrap"><table>
   <tr><th>Tier</th><th>Quota</th><th>Rate</th><th>Card</th></tr>
-  <tr><td>No key (try it)</td><td>3 scores an hour per address, on the <a href="#fixed-texts">five example sentences</a></td><td>3 a minute</td><td>No</td></tr>
-  <tr><td>Free</td><td>5 scores an hour, 10 a day, on the <a href="#fixed-texts">five example sentences</a></td><td>5 a minute</td><td>No</td></tr>
+  <tr><td>No key (try it)</td><td>3 recordings an hour per address, on the <a href="#fixed-texts">five example sentences</a></td><td>3 a minute</td><td>No</td></tr>
+  <tr><td>Free</td><td>5 recordings an hour, 10 a day, on the <a href="#fixed-texts">five example sentences</a></td><td>5 a minute</td><td>No</td></tr>
   <tr><td>Trial, Pro, credits</td><td>Opening soon: see <a href="/en/pricing/">pricing</a></td><td>60 a minute</td><td>Yes</td></tr>
 </table></div>
-<p>Every scored response names the <code>tier</code> that paid for it, and the
-  <code>model</code> that scored it: when we improve scoring, the name changes, so a
-  shift in your scores can be told from a change in your users. When an account
+<p>Every checked response names the <code>tier</code> that paid for it, and the
+  <code>model</code> that checked it: when we improve the model, the name changes, so a
+  shift in your matches can be told from a change in your users. When an account
   holds more than one plan, paid room is spent first and the free tier last.</p>
-<p id="fixed-texts">The no key and free tiers score only these five sentences, so you can
-  judge the scoring before you pay; any sentence of your own needs a paid plan. Case and
+<p id="fixed-texts">The no key and free tiers check only these five sentences, so you can
+  judge the feedback before you pay; any sentence of your own needs a paid plan. Case and
   punctuation do not matter. Each of these tiers also has an hourly limit shared by all
   its callers, answered 429 like the minute rate.</p>
 <ul>
@@ -78,9 +78,8 @@ description: mnemEcho Pronunciation API v1 reference: POST /score/text with Dutc
   <li lang="nl">Deze collega&#39;s hebben gelijk.</li>
 </ul>
 
-<h2 id="score">POST /score/text</h2>
-<p>Score one recording against one Dutch text. <code>POST /score</code> is the same call
-  under its first name and keeps working.</p>
+<h2 id="attempt">POST /attempt/text</h2>
+<p>Get feedback on one recording against one Dutch text.</p>
 <div class="table-wrap"><table>
   <tr><th>Field</th><th>Type</th><th>Rules</th></tr>
   <tr><td><code>text</code></td><td>form field</td><td>The Dutch that should be said. 1 to 12 words. Punctuation is ignored.</td></tr>
@@ -88,7 +87,7 @@ description: mnemEcho Pronunciation API v1 reference: POST /score/text with Dutc
 </table></div>
 
 <h3>curl</h3>
-<pre><code>curl -X POST {{api_base}}/score/text \
+<pre><code>curl -X POST {{api_base}}/attempt/text \
   -H "Authorization: Bearer $MNEMECHO_KEY" \
   -F "text=In februari is het Valentijnsdag." \
   -F "audio=@attempt.wav"</code></pre>
@@ -97,7 +96,7 @@ description: mnemEcho Pronunciation API v1 reference: POST /score/text with Dutc
 <pre><code>import os, requests
 
 resp = requests.post(
-    "{{api_base}}/score/text",
+    "{{api_base}}/attempt/text",
     headers={"Authorization": f"Bearer {os.environ['MNEMECHO_KEY']}"},
     data={"text": "In februari is het Valentijnsdag."},
     files={"audio": open("attempt.wav", "rb")},
@@ -105,7 +104,7 @@ resp = requests.post(
 )
 resp.raise_for_status()
 result = resp.json()
-print(result["score"], result["band"], result["worst_word"])</code></pre>
+print(result["match"], result["band"], result["worst_word"])</code></pre>
 
 <h3>JavaScript (Node 18 and later)</h3>
 <pre><code>import { readFile } from "node:fs/promises";
@@ -114,14 +113,14 @@ const form = new FormData();
 form.append("text", "In februari is het Valentijnsdag.");
 form.append("audio", new Blob([await readFile("attempt.wav")], { type: "audio/wav" }), "attempt.wav");
 
-const resp = await fetch("{{api_base}}/score/text", {
+const resp = await fetch("{{api_base}}/attempt/text", {
   method: "POST",
   headers: { Authorization: `Bearer ${process.env.MNEMECHO_KEY}` },
   body: form,
 });
 if (!resp.ok) throw new Error(`${resp.status} ${(await resp.json()).detail}`);
 const result = await resp.json();
-console.log(result.score, result.band, result.worst_word);</code></pre>
+console.log(result.match, result.band, result.worst_word);</code></pre>
 <p class="small muted">Full runnable examples are in the
   <a href="https://github.com/EazyEzar/mnemecho-api/tree/main/examples">GitHub repository</a>.</p>
 
@@ -130,7 +129,7 @@ console.log(result.score, result.band, result.worst_word);</code></pre>
   Two words shown in full; the others look like <code>"In"</code>.</p>
 <pre><code>{
   "text": "In februari is het Valentijnsdag",
-  "score": 91.6,
+  "match": 91.6,
   "band": "clear",
   "graded_by": ["pronunciation"],
   "reference": false,
@@ -158,20 +157,20 @@ console.log(result.score, result.band, result.worst_word);</code></pre>
 
 <div class="table-wrap"><table>
   <tr><th>Field</th><th>Meaning</th></tr>
-  <tr><td><code>text</code></td><td>The words that were scored, punctuation removed.</td></tr>
-  <tr><td><code>score</code></td><td>0 to 100, one decimal. Set against native Dutch speakers, so 90 and up is native-like, not merely good.</td></tr>
+  <tr><td><code>text</code></td><td>The words that were checked, punctuation removed.</td></tr>
+  <tr><td><code>match</code></td><td>0 to 100, one decimal. Set against native Dutch speakers, so 90 and up is native-like, not merely good.</td></tr>
   <tr><td><code>band</code></td><td><code>native_like</code>, <code>clear</code>, <code>try_again</code> or <code>far</code>. See <a href="#bands">feedback bands</a>.</td></tr>
-  <tr><td><code>model</code></td><td>The scoring model, for example <code>nl-2026-10</code>. It changes when scoring improves.</td></tr>
+  <tr><td><code>model</code></td><td>The model, for example <code>nl-2026-10</code>. It changes when the model improves.</td></tr>
   <tr><td><code>tier</code></td><td>The plan this score was charged to: <code>demo</code>, <code>api_free</code>, <code>api_trial</code>, <code>api_pro</code>, <code>credits</code>, or <code>custom</code>.</td></tr>
-  <tr><td><code>graded_by</code></td><td>Which parts made the score. Always <code>["pronunciation"]</code> on this endpoint.</td></tr>
+  <tr><td><code>graded_by</code></td><td>Which parts made the match. Always <code>["pronunciation"]</code> on this endpoint.</td></tr>
   <tr><td><code>reference</code></td><td>Always <code>false</code>: no native recording was compared.</td></tr>
   <tr><td><code>words</code></td><td>One entry per word, in order.</td></tr>
-  <tr><td><code>words[].ok</code></td><td><code>false</code> if any of its sounds counted against the score, or if it was heard as another word.</td></tr>
+  <tr><td><code>words[].ok</code></td><td><code>false</code> if any of its sounds counted against the match, or if it was heard as another word.</td></tr>
   <tr><td><code>words[].wrong_word</code></td><td><code>true</code> when a different word was said in its place (<span lang="nl">maart</span> for <span lang="nl">februari</span>). The attempt cannot pass.</td></tr>
   <tr><td><code>words[].sounds</code></td><td>One entry per expected sound (phoneme) in the word.</td></tr>
   <tr><td><code>sounds[].target</code></td><td>The sound expected, in IPA. <code>ː</code> marks a long vowel.</td></tr>
   <tr><td><code>sounds[].heard</code></td><td>What was heard instead, on a wrong sound. Equal to <code>target</code> when <code>ok</code>.</td></tr>
-  <tr><td><code>sounds[].ok</code></td><td>Whether this sound counted against the score.</td></tr>
+  <tr><td><code>sounds[].ok</code></td><td>Whether this sound counted against the match.</td></tr>
   <tr><td><code>sounds[].quality</code></td><td>0 to 1, how clearly the expected sound was heard (1 is clearly).</td></tr>
   <tr><td><code>sounds[].hint</code></td><td>On a wrong sound, a short English tip such as "the long ee in <span lang="nl">zee</span>". Otherwise <code>null</code>.</td></tr>
   <tr><td><code>ipa_target</code></td><td>All expected sounds, space separated.</td></tr>
@@ -185,7 +184,7 @@ console.log(result.score, result.band, result.worst_word);</code></pre>
   The speaker said <span lang="nl">februari</span>, so <span lang="nl">maart</span> is marked as
   a wrong word and the band is lowered.</p>
 <pre><code>{
-  "score": 74.0,
+  "match": 74.0,
   "band": "try_again",
   "words": [
     ...
@@ -206,7 +205,7 @@ console.log(result.score, result.band, result.worst_word);</code></pre>
   do not use it to make or support decisions about a person (see the
   <a href="/en/terms/">terms</a>, A4 and A5).</p>
 <div class="table-wrap"><table>
-  <tr><th>Band</th><th>Score</th><th>Meaning</th><th>Suggested next step</th></tr>
+  <tr><th>Band</th><th>Match</th><th>Meaning</th><th>Suggested next step</th></tr>
   <tr><td><code>native_like</code></td><td>95 to 100</td><td>Sounds like native speakers.</td><td>Celebrate; move on.</td></tr>
   <tr><td><code>clear</code></td><td>75 to 94.9</td><td>Clear, small slips.</td><td>Move on; show the one sound to work on, if any.</td></tr>
   <tr><td><code>try_again</code></td><td>55 to 74.9</td><td>Recognisable, a word or some sounds to work on.</td><td>Offer another try; show <code>worst_word</code>.</td></tr>
@@ -219,7 +218,7 @@ console.log(result.score, result.band, result.worst_word);</code></pre>
   <tr><td><code>no_reference</code></td><td>Always present: rhythm and pitch were not graded.</td></tr>
   <tr><td><code>wrong_word=N</code></td><td>N words were heard as other words. See <code>words[].wrong_word</code>.</td></tr>
   <tr><td><code>unobservable_phones=N</code></td><td>N expected sounds were not heard in their place at all. A few are forgiven; more count as missing.</td></tr>
-  <tr><td><code>missing_phones=N</code></td><td>N sounds were heard as left out, and lowered the score.</td></tr>
+  <tr><td><code>missing_phones=N</code></td><td>N sounds were heard as left out, and lowered the match.</td></tr>
   <tr><td><code>reduced_phones=N</code></td><td>N sounds that Dutch speakers often drop were dropped, and not charged.</td></tr>
   <tr><td><code>insertions=N</code></td><td>N extra sounds were heard that the text does not have.</td></tr>
   <tr><td><code>text_mismatch</code></td><td>Most of the text was not heard: something else was said, or the wrong clip was sent.</td></tr>
@@ -242,7 +241,7 @@ console.log(result.score, result.band, result.worst_word);</code></pre>
             "windows": {
               "hour": {"limit": 5, "used": 3, "left": 2, "resets_at": "2026-10-24T10:42:05+00:00"},
               "day": {"limit": 10, "used": 7, "left": 3, "resets_at": "2026-10-25T00:00:00+00:00"}}}]}</code></pre>
-<p>The hour is a rolling 60 minutes: <code>resets_at</code> is when the oldest score in
+<p>The hour is a rolling 60 minutes: <code>resets_at</code> is when the oldest recording in
   it drops out. The day is the UTC day.</p>
 
 <h2 id="health">GET /health</h2>
@@ -262,7 +261,7 @@ console.log(result.score, result.band, result.worst_word);</code></pre>
 <h2 id="errors">Errors</h2>
 <p>Every error is JSON with a stable <code>error</code> code to branch on and a
   <code>detail</code> message written for a developer, for example
-  <code>{"error": "not_scorable", "detail": "send the Dutch text as the form field 'text'"}</code>.</p>
+  <code>{"error": "unprocessable", "detail": "send the Dutch text as the form field 'text'"}</code>.</p>
 <div class="table-wrap"><table>
   <tr><th>Status</th><th><code>error</code></th><th>When</th><th>What to do</th></tr>
   <tr><td>400</td><td><code>bad_request</code></td><td>Empty audio, or audio with no samples.</td><td>Check the recording step.</td></tr>
@@ -273,15 +272,15 @@ console.log(result.score, result.band, result.worst_word);</code></pre>
   <tr><td>403</td><td><code>fixed_texts_only</code></td><td>The no key or free tier was sent a sentence that is not one of the <a href="#fixed-texts">five</a>.</td><td>Send one of <code>fixed_texts</code> in the body, or follow <code>upgrade_url</code>.</td></tr>
   <tr><td>413</td><td><code>too_large</code></td><td>Audio over 15 seconds, or upload over 4 MB.</td><td>Trim silence; send one sentence per call.</td></tr>
   <tr><td>415</td><td><code>unsupported_audio</code></td><td>Audio not readable.</td><td>Send wav, flac, ogg or mp3. Browser webm recordings must be converted first.</td></tr>
-  <tr><td>422</td><td><code>not_scorable</code></td><td>Text missing, over 12 words, or nothing in the audio could be heard.</td><td>For "could not be heard", ask for another try, louder. This is not a low score.</td></tr>
+  <tr><td>422</td><td><code>unprocessable</code></td><td>Text missing, over 12 words, or nothing in the audio could be heard.</td><td>For "could not be heard", ask for another try, louder. This is not a low match.</td></tr>
   <tr><td>429</td><td><code>rate_limited</code></td><td>Too many calls in the last minute, or the no key or free tier is full this hour for everyone.</td><td>Wait the seconds in the <code>Retry-After</code> header.</td></tr>
   <tr><td>500</td><td></td><td>Our fault.</td><td>Retry once; if it repeats, tell us the time.</td></tr>
 </table></div>
 
 <h2 id="limits">Limits</h2>
 <ul>
-  <li>Quota counts scored recordings only. A request that fails (400, 413, 415, 422) costs no quota but counts toward the per minute rate; refused requests (402, 403, 429) count for nothing.</li>
-  <li>Every scored response carries <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code> (Unix seconds) and <code>X-RateLimit-Window</code> for the window closest to running out.</li>
+  <li>Quota counts checked recordings only. A request that fails (400, 413, 415, 422) costs no quota but counts toward the per minute rate; refused requests (402, 403, 429) count for nothing.</li>
+  <li>Every checked response carries <code>X-RateLimit-Limit</code>, <code>X-RateLimit-Remaining</code>, <code>X-RateLimit-Reset</code> (Unix seconds) and <code>X-RateLimit-Window</code> for the window closest to running out.</li>
   <li>A spent quota answers 402 with when it frees up and where to get more:
 <pre><code>{"error": "quota_exhausted", "detail": "...", "resets_at": "2026-10-24T10:42:05+00:00",
  "upgrade_url": "...", "credits_url": "...", "keys_url": "...",
@@ -305,7 +304,7 @@ console.log(result.score, result.band, result.worst_word);</code></pre>
   <li>Send sentences, not single words. One word said alone is often not heard at all (422). Three words or more is reliable.</li>
   <li>Record 16 kHz mono wav if you can choose. Other formats work.</li>
   <li>Start recording before the speaker starts and stop shortly after. Silence within the 15 seconds is fine.</li>
-  <li>Background noise, music, or Bluetooth earbuds with noise suppression lower the score. A wired or built-in microphone in a quiet room works best.</li>
+  <li>Background noise, music, or Bluetooth earbuds with noise suppression lower the match. A wired or built-in microphone in a quiet room works best.</li>
   <li>Write numbers out (<span lang="nl">twaalf</span>, not 12). Names and English loanwords may be expected with a pronunciation your users do not use.</li>
   <li>Call from your server, not the user's device, so your key stays secret.</li>
 </ul>

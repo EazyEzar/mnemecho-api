@@ -1,5 +1,5 @@
 title: Pronunciation API
-description: The mnemEcho Pronunciation API scores Dutch speech against its text: practice feedback on one recording: a score from 0 to 100, a feedback band, and every word and sound marked. Private by default.
+description: The mnemEcho Pronunciation API gives practice feedback on one recording of Dutch speech: a match from 0 to 100, a feedback band, and every word and sound marked. Private by default.
 ---
 <section class="hero">
   <p class="tagline">Echo it until it's yours.</p>
@@ -7,7 +7,7 @@ description: The mnemEcho Pronunciation API scores Dutch speech against its text
   <p class="lead">Pronunciation feedback for your app. Speech-to-text tells you the words.
     mnemEcho knows the sentence and tells you which sounds were right.</p>
   <p class="lead">Send a Dutch sentence and a recording of someone saying it. Get back a
-    score from 0 to 100 for that recording, a feedback band, and every word and every sound marked, with a short
+    match from 0 to 100 for that recording, a feedback band, and every word and every sound marked, with a short
     English tip on each sound to work on.</p>
   <div class="cta">
     <a class="button primary" href="/en/docs/">Read the API docs</a>
@@ -18,7 +18,7 @@ description: The mnemEcho Pronunciation API scores Dutch speech against its text
 <h2>What you get back</h2>
 <div class="grid two">
   <div class="card">
-    <h3>A score and a feedback band</h3>
+    <h3>A match and a feedback band</h3>
     <p>One number for the recording, set against native Dutch speakers saying the same
       sentence, and a band your app can use to pick its next step: move on, or try again.</p>
   </div>
@@ -40,12 +40,12 @@ description: The mnemEcho Pronunciation API scores Dutch speech against its text
 </div>
 
 <h2>One call</h2>
-<pre><code>curl -X POST {{api_base}}/score \
+<pre><code>curl -X POST {{api_base}}/attempt/text \
   -H "Authorization: Bearer $MNEMECHO_KEY" \
   -F "text=In februari is het Valentijnsdag." \
   -F "audio=@attempt.wav"</code></pre>
 <pre><code>{
-  "score": 91.6,
+  "match": 91.6,
   "band": "clear",
   "worst_word": "februari",
   "words": [
@@ -59,31 +59,31 @@ description: The mnemEcho Pronunciation API scores Dutch speech against its text
 <h2>Built for</h2>
 <div class="grid">
   <div class="card"><h3>Language learning apps</h3><p>Speaking practice with feedback on every sound.</p></div>
-  <div class="card"><h3>Practice between lessons</h3><p>Learners get feedback on every sound; the score stays with the learner.</p></div>
+  <div class="card"><h3>Practice between lessons</h3><p>Learners get feedback on every sound; the feedback stays with the learner.</p></div>
   <div class="card"><h3>AI tutors and agents</h3><p>Give your agent sound-by-sound pronunciation feedback. The API is described in <a href="/llms.txt">llms.txt</a> and <a href="/openapi.json">OpenAPI</a>.</p></div>
   <div class="card"><h3>Voice and dubbing QA</h3><p>Check that a Dutch voice, synthetic or human, says each line right before release.</p></div>
   <div class="card"><h3>Games</h3><p>Speak-to-play: a result fast enough to drive the next move.</p></div>
-  <div class="card"><h3>Speech data teams</h3><p>Does this recording match its sentence? A score per clip, a flag when it does not.</p></div>
+  <div class="card"><h3>Speech data teams</h3><p>Does this recording match its sentence? A match per clip, a flag when it does not.</p></div>
 </div>
 
 <h2>Practice feedback, not a decision</h2>
-<p>A score describes one recording of one sentence: how close its sounds are to native
+<p>A match describes one recording of one sentence: how close its sounds are to native
   speakers saying the same sentence. It is feedback for practice, in language learning apps,
   games and voice QA. It says nothing about a person's ability, and it is not an exam result.
   Our <a href="/en/terms/">terms</a> forbid using it to make or support decisions about a
   person's education, work, immigration status, health or rights.</p>
 
 <h2>Private by default</h2>
-<p>Your audio and text are scored in memory and dropped. They are never stored and never
+<p>Your audio and text are checked in memory and dropped. They are never stored and never
   used to train anything. We keep one usage line per request (time, status, audio length,
-  score) to count your limits. Details in the <a href="/en/privacy/">privacy notice</a>.</p>
+  match) to count your limits. Details in the <a href="/en/privacy/">privacy notice</a>.</p>
 
 <h2>The learner app</h2>
 <p>mnemEcho began as an app that trains people to speak Dutch from memory: hear a native
   speaker, shadow them, then say the sentence from its English, with feedback on every
-  sound. The API runs on the same scoring. The app has <a href="/en/">its own page</a>.</p>
+  sound. The API runs on the same feedback engine. The app has <a href="/en/">its own page</a>.</p>
 
 <h2>Getting a key</h2>
 <p>Make a free key at <a href="https://account.mnemecho.com/keys">account.mnemecho.com</a>:
-  sign in with your email or Google, no card, about a minute. The free tier scores 5
+  sign in with your email or Google, no card, about a minute. The free tier checks 5
   recordings an hour and 10 a day. Every plan is on the <a href="/en/pricing/">pricing page</a>.</p>

@@ -1,7 +1,7 @@
 # mnemEcho Pronunciation API
 
-Score Dutch speech against its text. Send a Dutch sentence and a recording of
-someone saying it; get back practice feedback on that recording: a score from 0 to 100, a feedback band, and every word and
+Pronunciation feedback on Dutch speech. Send a Dutch sentence and a recording of
+someone saying it; get back practice feedback on that recording: a match from 0 to 100, a feedback band, and every word and
 sound marked, with a short English tip on each sound to work on.
 
 - Docs: https://mnemecho.com/en/docs/
@@ -10,17 +10,17 @@ sound marked, with a short English tip on each sound to work on.
 - Status: https://mnemecho.com/en/status/
 
 This repository holds the public documentation, examples and the source of
-mnemecho.com. The scoring service itself is not open source.
+mnemecho.com. The service itself is not open source.
 
 ## Quick start
 
 Make a free key at https://account.mnemecho.com/keys (email or Google sign in, no
-card): 5 scores an hour, 10 a day. With no key you can try 3 scores an hour. Both
-score only five example sentences, listed in the docs; your own sentences need a paid plan.
+card): 5 recordings an hour, 10 a day. With no key you can try 3 recordings an hour. Both
+check only five example sentences, listed in the docs; your own sentences need a paid plan.
 
 ```sh
 export MNEMECHO_KEY=...
-curl -X POST https://api.mnemecho.com/api/v1/score/text \
+curl -X POST https://api.mnemecho.com/api/v1/attempt/text \
   -H "Authorization: Bearer $MNEMECHO_KEY" \
   -F "text=In februari is het Valentijnsdag." \
   -F "audio=@attempt.wav"
@@ -28,7 +28,7 @@ curl -X POST https://api.mnemecho.com/api/v1/score/text \
 
 ```json
 {
-  "score": 91.6,
+  "match": 91.6,
   "band": "clear",
   "worst_word": "februari",
   "words": [
@@ -47,16 +47,16 @@ curl -X POST https://api.mnemecho.com/api/v1/score/text \
 
 | | |
 |---|---|
-| [`examples/curl/score.sh`](examples/curl/score.sh) | curl |
-| [`examples/python/score.py`](examples/python/score.py) | Python, `requests` |
-| [`examples/js/score.mjs`](examples/js/score.mjs) | Node 18+, no dependencies |
+| [`examples/curl/attempt.sh`](examples/curl/attempt.sh) | curl |
+| [`examples/python/attempt.py`](examples/python/attempt.py) | Python, `requests` |
+| [`examples/js/attempt.mjs`](examples/js/attempt.mjs) | Node 18+, no dependencies |
 
 ## What is graded
 
 Pronunciation only: whether each expected sound was said, and said right, and
 whether each word is the word in the text. Rhythm, pitch and vowel length need a
 native recording of the same sentence and are not graded here. Voice quality is
-never graded. Audio and text are scored in memory and never stored.
+never graded. Audio and text are checked in memory and never stored.
 
 ## Issues and requests
 
