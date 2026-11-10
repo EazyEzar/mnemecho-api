@@ -183,6 +183,14 @@ PRICING_CSP = (f"default-src 'self'; script-src 'self' 'unsafe-inline' {PADDLE_C
                f"style-src 'self' 'unsafe-inline' {PADDLE_CDNS}; img-src 'self' data: https://*.paddle.com; "
                "font-src 'self' https://*.paddle.com; connect-src 'self' https://*.paddle.com; "
                "frame-src https://*.paddle.com; frame-ancestors 'none'; base-uri 'self'")
+# The API pages moved to api.mnemecho.com (phase 186). Cloudflare Pages kept serving
+# stored copies of the old ones on mnemecho.com after the split, which a cache purge
+# does not clear; these rules run before any stored file. They lead to the learner
+# home, never to the API (2026-11-10, owner pick).
+REDIRECTS = "".join(
+    f"/{lang}/{old} /{lang}/ 301\n/{lang}/{old}/* /{lang}/ 301\n"
+    for lang in ("en", "nl") for old in ("api", "docs", "status", "plans"))
+
 HEADERS = f"""/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -236,7 +244,8 @@ def build() -> list[Path]:
     learner = dict(site, learner_url=site["base_url"])
     written = build_one(learner, SRC / "pages", OUT, site["pages"], dev=False)
     (OUT / "_headers").write_text(HEADERS, encoding="utf-8")
-    dev = dict(site, base_url=site["dev_base_url"], learner_url=site["base_url"])
+    (OUT / "_redirects").write_text(REDIRECTS, encoding="utf-8")
+    dev =dict(site, base_url=site["dev_base_url"], learner_url=site["base_url"])
     written += build_one(dev, SRC / "dev", OUT_DEV, site["dev_pages"], dev=True)
     for name in ("llms.txt", "openapi.json"):
         shutil.copy(ROOT / name, OUT_DEV / name)

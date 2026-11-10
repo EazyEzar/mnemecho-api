@@ -1,0 +1,16 @@
+/en/api /en/ 301
+/en/api/* /en/ 301
+/en/docs /en/ 301
+/en/docs/* /en/ 301
+/en/status /en/ 301
+/en/status/* /en/ 301
+/en/plans /en/ 301
+/en/plans/* /en/ 301
+/nl/api /nl/ 301
+/nl/api/* /nl/ 301
+/nl/docs /nl/ 301
+/nl/docs/* /nl/ 301
+/nl/status /nl/ 301
+/nl/status/* /nl/ 301
+/nl/plans /nl/ 301
+/nl/plans/* /nl/ 301
