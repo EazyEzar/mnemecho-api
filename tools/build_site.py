@@ -76,8 +76,9 @@ def fill(text: str, site: dict) -> str:
 def render(lang: str, name: str, meta: dict, body: str, site: dict, dev: bool = False) -> str:
     c = CHROME[lang]
     other = "nl" if lang == "en" else "en"
+    current = ' aria-current="page"'
     nav = "".join(
-        f'<a href="{url_of(lang, n)}"{" aria-current=\"page\"" if n == name else ""}>{label}</a>'
+        f'<a href="{url_of(lang, n)}"{current if n == name else ""}>{label}</a>'
         for n, label in c["dev_nav" if dev else "nav"])
     # The developer site has its own API terms; every other legal page is mnemecho.com's.
     legal = " · ".join(
