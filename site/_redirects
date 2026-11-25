@@ -80,3 +80,9 @@
 /en/tg/* /en/?s=tg&c=:splat 302
 /nl/tg /nl/?s=tg 302
 /nl/tg/* /nl/?s=tg&c=:splat 302
+/bs /en/?s=bs 302
+/bs/* /en/?s=bs&c=:splat 302
+/en/bs /en/?s=bs 302
+/en/bs/* /en/?s=bs&c=:splat 302
+/nl/bs /nl/?s=bs 302
+/nl/bs/* /nl/?s=bs&c=:splat 302
