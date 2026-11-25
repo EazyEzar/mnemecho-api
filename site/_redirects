@@ -74,3 +74,9 @@
 /en/sc/* /en/?s=sc&c=:splat 302
 /nl/sc /nl/?s=sc 302
 /nl/sc/* /nl/?s=sc&c=:splat 302
+/tg /en/?s=tg 302
+/tg/* /en/?s=tg&c=:splat 302
+/en/tg /en/?s=tg 302
+/en/tg/* /en/?s=tg&c=:splat 302
+/nl/tg /nl/?s=tg 302
+/nl/tg/* /nl/?s=tg&c=:splat 302
