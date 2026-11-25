@@ -7,7 +7,7 @@
   "kvk": "97741876",
   "address": "Mechelenstraat 66, 4826 KN Breda",
   "legal_draft": false,
-  "updated": "2026-11-19",
+  "updated": "2026-11-25",
   "pages": [
     "",
     "pricing",
@@ -30,5 +30,17 @@
   "paddle_env": "live",
   "paddle_token": "live_b505e2b1ecc9169ff37df2a7279",
   "price_month": "pri_01m7011atrcedmh0tf2hwf45kv",
-  "price_year": "pri_01m7011b0646rmdevqzffz8qn2"
+  "price_year": "pri_01m7011b0646rmdevqzffz8qn2",
+  "source_codes": [
+    "ig",
+    "li",
+    "tt",
+    "yt",
+    "em",
+    "rd",
+    "fb",
+    "th",
+    "x",
+    "sc"
+  ]
 }
