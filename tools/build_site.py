@@ -192,6 +192,18 @@ REDIRECTS = "".join(
     f"/{lang}/{old} /{lang}/ 301\n/{lang}/{old}/* /{lang}/ 301\n"
     for lang in ("en", "nl") for old in ("api", "docs", "status", "plans"))
 
+
+def redirects(site: dict) -> str:
+    """The old API paths, then (phase 223) the short links a post or bio uses:
+    /ig and /en/ig to the English home, /nl/ig to the Dutch, each with ?s=ig, and
+    /ig/<campaign> with &c=<campaign>. 302, so a code can be pointed elsewhere."""
+    out = REDIRECTS
+    for code in site["source_codes"]:
+        for prefix, lang in (("", "en"), ("/en", "en"), ("/nl", "nl")):
+            out += (f"{prefix}/{code} /{lang}/?s={code} 302\n"
+                    f"{prefix}/{code}/* /{lang}/?s={code}&c=:splat 302\n")
+    return out
+
 HEADERS = f"""/*
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin
@@ -245,7 +257,7 @@ def build() -> list[Path]:
     learner = dict(site, learner_url=site["base_url"])
     written = build_one(learner, SRC / "pages", OUT, site["pages"], dev=False)
     (OUT / "_headers").write_text(HEADERS, encoding="utf-8")
-    (OUT / "_redirects").write_text(REDIRECTS, encoding="utf-8")
+    (OUT / "_redirects").write_text(redirects(site), encoding="utf-8")
     dev =dict(site, base_url=site["dev_base_url"], learner_url=site["base_url"])
     written += build_one(dev, SRC / "dev", OUT_DEV, site["dev_pages"], dev=True)
     for name in ("llms.txt", "openapi.json"):
